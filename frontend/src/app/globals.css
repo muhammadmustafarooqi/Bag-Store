@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0f0e0c;
+    --bg-secondary: #1a1815;
+    --bg-card: #221f1b;
+    --gold: #c8a96e;
+    --gold-light: #e8c98a;
+    --cream: #f0e4ce;
+    --muted: #7a6a54;
+    --border: rgba(200, 169, 110, 0.15);
+    --success: #2d6a4f;
+    --error: #8b1a1a;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--bg-primary);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-sm tracking-wider uppercase transition-all duration-300 rounded-none;
+    background: var(--gold);
+    color: var(--bg-primary);
+    font-family: 'Outfit', sans-serif;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(200, 169, 110, 0.3);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-sm tracking-wider uppercase transition-all duration-300;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    background: transparent;
+    font-family: 'Outfit', sans-serif;
+  }
+  .btn-outline:hover {
+    background: var(--gold);
+    color: var(--bg-primary);
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 0;
+  }
+
+  .gold-border {
+    border: 1px solid var(--border);
+  }
+
+  .gold-text {
+    color: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: -0.02em;
+  }
+
+  .section-subtitle {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 text-sm outline-none transition-all duration-200;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+  }
+  .input-field:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.1);
+  }
+  .input-field::placeholder {
+    color: var(--muted);
+  }
+
+  .product-card {
+    @apply relative overflow-hidden transition-all duration-300;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+  }
+  .product-card:hover {
+    border-color: rgba(200, 169, 110, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .skeleton {
+    @apply animate-pulse rounded;
+    background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-secondary) 50%, var(--bg-card) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .badge-gold {
+    @apply text-xs font-semibold px-2 py-1 tracking-wider uppercase;
+    background: var(--gold);
+    color: var(--bg-primary);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .badge-sale {
+    @apply text-xs font-semibold px-2 py-1 tracking-wider uppercase;
+    background: #8b1a1a;
+    color: #f5c6c6;
+  }
+
+  .nav-link {
+    @apply relative text-sm font-medium tracking-wider uppercase transition-colors duration-200;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.1em;
+  }
+  .nav-link:hover, .nav-link.active {
+    color: var(--cream);
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover::after, .nav-link.active::after {
+    width: 100%;
+  }
+
+  .status-placed { @apply bg-blue-900 text-blue-300; }
+  .status-confirmed { @apply bg-indigo-900 text-indigo-300; }
+  .status-packed { @apply bg-yellow-900 text-yellow-300; }
+  .status-shipped { @apply bg-orange-900 text-orange-300; }
+  .status-delivered { @apply bg-green-900 text-green-300; }
+  .status-cancelled { @apply bg-red-900 text-red-300; }
+  .status-returned { @apply bg-gray-800 text-gray-400; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.5s ease forwards; }
+.animate-scaleIn { animation: scaleIn 0.3s ease forwards; }
