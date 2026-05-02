@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import { FiInstagram, FiFacebook, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';

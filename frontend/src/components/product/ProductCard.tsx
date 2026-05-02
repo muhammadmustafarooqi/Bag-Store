@@ -80,14 +80,12 @@ export function ProductCard({ product }: Props) {
 
           {/* Add to Cart Overlay */}
           <div
-            className={`absolute bottom-0 left-0 right-0 transition-all duration-300 ${
-              hovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}
+            className={`absolute bottom-0 left-0 right-0 transition-all duration-300 md:opacity-0 md:translate-y-4 md:group-hover:opacity-100 md:group-hover:translate-y-0 opacity-100 translate-y-0`}
           >
             <button
               onClick={handleAddToCart}
               disabled={product.stock === 0}
-              className="w-full flex items-center justify-center gap-2 py-3 text-sm font-semibold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              className="w-full flex items-center justify-center gap-2 py-3 text-xs md:text-sm font-semibold uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               style={{ background: '#c8a96e', color: '#0f0e0c', fontFamily: "'Outfit', sans-serif" }}
             >
               <FiShoppingBag size={16} />

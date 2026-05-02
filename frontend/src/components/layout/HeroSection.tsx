@@ -23,12 +23,12 @@ export function HeroSection() {
       />
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 text-center py-20">
         <div className="animate-fadeIn">
-          <p className="section-subtitle mb-4">Pakistan's Premier Bag Destination</p>
+          <p className="section-subtitle mb-4 text-sm md:text-base">Pakistan's Premier Bag Destination</p>
           <h1
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
-            className="text-6xl md:text-8xl lg:text-9xl font-bold leading-none mb-6"
+            className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold leading-tight md:leading-none mb-6"
           >
             <span style={{ color: '#f0e4ce' }}>Carry What</span>
             <br />
@@ -43,12 +43,12 @@ export function HeroSection() {
               Matters
             </span>
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10" style={{ color: '#7a6a54' }}>
+          <p className="text-base md:text-xl max-w-2xl mx-auto mb-10 px-4" style={{ color: '#7a6a54' }}>
             Discover our collection of handcrafted premium bags — from everyday handbags to travel essentials.
             Free delivery on orders above Rs 2,000.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/shop" className="btn-primary text-base px-8 py-4 inline-flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center px-6">
+            <Link href="/shop" className="btn-primary text-base px-8 py-4 inline-flex items-center justify-center gap-2">
               Shop Collection <FiArrowRight size={18} />
             </Link>
             <Link href="/shop?filter=new" className="btn-outline text-base px-8 py-4">
@@ -57,20 +57,20 @@ export function HeroSection() {
           </div>
 
           {/* Stats */}
-          <div className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto">
+          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto px-4">
             {[
               { num: '5000+', label: 'Happy Customers' },
               { num: '50+', label: 'Bag Styles' },
               { num: '3-7 Days', label: 'Nationwide Delivery' },
             ].map((stat) => (
-              <div key={stat.label} className="text-center">
+              <div key={stat.label} className="text-center p-4 sm:p-0" style={{ background: 'rgba(200,169,110,0.02)', border: '1px solid rgba(200,169,110,0.05)', borderRadius: '4px' }}>
                 <p
-                  style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.75rem', color: '#c8a96e' }}
-                  className="font-bold"
+                  style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#c8a96e' }}
+                  className="font-bold md:text-3xl"
                 >
                   {stat.num}
                 </p>
-                <p className="text-xs uppercase tracking-widest mt-1" style={{ color: '#7a6a54' }}>
+                <p className="text-[10px] md:text-xs uppercase tracking-widest mt-1" style={{ color: '#7a6a54' }}>
                   {stat.label}
                 </p>
               </div>

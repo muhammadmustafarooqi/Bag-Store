@@ -1,13 +1,13 @@
 'use client';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
-import { FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiLogOut, FiBarChart2 } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiLogOut } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -29,37 +29,61 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen" style={{ background: '#0a0908' }}>
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 flex flex-col" style={{ background: '#0f0e0c', borderRight: '1px solid rgba(200,169,110,0.1)' }}>
-        <div className="p-6 mb-4" style={{ borderBottom: '1px solid rgba(200,169,110,0.1)' }}>
-          <Link href="/">
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#c8a96e', letterSpacing: '0.15em' }}>
-              KAARVAN
-            </span>
-          </Link>
-          <p className="text-xs uppercase tracking-widest mt-1" style={{ color: '#7a6a54' }}>Admin Panel</p>
+      <aside 
+        className={`fixed md:static inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out md:translate-x-0 flex flex-col ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{ background: '#0f0e0c', borderRight: '1px solid rgba(200,169,110,0.1)' }}
+      >
+        <div className="p-6 mb-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(200,169,110,0.1)' }}>
+          <div>
+            <Link href="/">
+              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#c8a96e', letterSpacing: '0.15em' }}>
+                KAARVAN
+              </span>
+            </Link>
+            <p className="text-xs uppercase tracking-widest mt-1" style={{ color: '#7a6a54' }}>Admin Panel</p>
+          </div>
+          <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-[#7a6a54]">
+            <FiX size={20} />
+          </button>
         </div>
 
         <nav className="flex-1 px-3 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-4 py-3 text-sm rounded-none transition-all group"
-              style={{ color: '#7a6a54' }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = '#f0e4ce'; e.currentTarget.style.background = 'rgba(200,169,110,0.05)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = '#7a6a54'; e.currentTarget.style.background = 'transparent'; }}
-            >
-              <span className="group-hover:text-[#c8a96e] transition-colors">{item.icon}</span>
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsSidebarOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-sm transition-all group hover:bg-[rgba(200,169,110,0.05)]"
+                style={{
+                  color: isActive ? '#c8a96e' : '#7a6a54',
+                  background: isActive ? 'rgba(200,169,110,0.08)' : 'transparent',
+                  borderLeft: isActive ? '2px solid #c8a96e' : '2px solid transparent',
+                }}
+              >
+                <span style={{ color: isActive ? '#c8a96e' : 'inherit' }}>{item.icon}</span>
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="p-4" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
           <button
             onClick={async () => { await logout(); router.push('/'); }}
-            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors"
+            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors w-full px-4 py-2"
           >
             <FiLogOut size={16} /> Logout
           </button>
@@ -68,6 +92,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
+        {/* Mobile Header */}
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-[rgba(200,169,110,0.1)] bg-[#0f0e0c]">
+          <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-[#c8a96e]">
+            <FiMenu size={24} />
+          </button>
+          <span className="text-sm font-serif text-[#c8a96e]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            KAARVAN ADMIN
+          </span>
+          <div className="w-10" /> {/* Spacer */}
+        </div>
         {children}
       </main>
     </div>

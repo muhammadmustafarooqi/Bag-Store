@@ -13,7 +13,7 @@ router.get('/featured', getFeaturedProducts);
 router.get('/new-arrivals', getNewArrivals);
 router.get('/:slug', getProduct);
 router.post('/', authMiddleware, adminMiddleware, upload.array('images', 10), createProduct);
-router.put('/:id', authMiddleware, adminMiddleware, updateProduct);
+router.put('/:id', authMiddleware, adminMiddleware, upload.array('images', 10), updateProduct);
 router.delete('/:id', authMiddleware, adminMiddleware, deleteProduct);
 router.post('/:id/reviews', authMiddleware, addReview);
 router.get('/:id/reviews', getReviews);

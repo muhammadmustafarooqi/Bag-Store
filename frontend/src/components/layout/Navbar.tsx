@@ -138,21 +138,61 @@ export function Navbar() {
           </div>
         )}
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
         {menuOpen && (
-          <nav className="md:hidden py-4 border-t border-[rgba(200,169,110,0.15)] animate-fadeIn">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="block py-3 text-sm font-medium uppercase tracking-wider text-[#7a6a54] hover:text-[#f0e4ce] transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div 
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            onClick={() => setMenuOpen(false)}
+          />
         )}
+
+        {/* Mobile Side Drawer */}
+        <div 
+          className={`fixed top-0 right-0 bottom-0 z-50 w-80 max-w-[80%] bg-[#0a0908] border-l border-[rgba(200,169,110,0.1)] transition-transform duration-300 ease-in-out md:hidden ${
+            menuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="flex flex-col h-full p-8">
+            <div className="flex justify-end mb-8">
+              <button onClick={() => setMenuOpen(false)} className="p-2 text-[#7a6a54]">
+                <FiX size={24} />
+              </button>
+            </div>
+
+            <nav className="flex flex-col gap-6 mb-auto">
+              <p className="text-[10px] uppercase tracking-widest text-[#7a6a54] mb-2">Shop Categories</p>
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-2xl font-serif text-[#f0e4ce] hover:text-[#c8a96e] transition-colors"
+                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="pt-8 border-t border-[rgba(200,169,110,0.1)]">
+              <Link 
+                href={isAuthenticated ? '/account' : '/auth/login'}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 text-[#f0e4ce] mb-6"
+              >
+                <FiUser size={20} className="text-[#c8a96e]" />
+                <span>{isAuthenticated ? 'My Account' : 'Login / Register'}</span>
+              </Link>
+              <div className="flex gap-4">
+                <a href="#" className="p-2 bg-[rgba(200,169,110,0.05)] text-[#c8a96e] rounded-full"><FiHeart size={18} /></a>
+                <Link href="/cart" onClick={() => setMenuOpen(false)} className="p-2 bg-[rgba(200,169,110,0.05)] text-[#c8a96e] rounded-full relative">
+                  <FiShoppingBag size={18} />
+                  {itemCount > 0 && <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#c8a96e] text-[#0f0e0c] text-[10px] rounded-full flex items-center justify-center font-bold">{itemCount}</span>}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   );

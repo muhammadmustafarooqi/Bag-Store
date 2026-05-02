@@ -85,11 +85,21 @@ exports.getNewArrivals = async (req, res, next) => {
   }
 };
 
-// @desc  Get single product by slug
-// @route GET /api/v1/products/:slug
+// @desc  Get single product by slug or ID
+// @route GET /api/v1/products/:slugOrId
 exports.getProduct = async (req, res, next) => {
   try {
-    const product = await Product.findOne({ slug: req.params.slug });
+    const { slugOrId } = req.params;
+    let product;
+    
+    if (slugOrId.match(/^[0-9a-fA-F]{24}$/)) {
+      product = await Product.findById(slugOrId);
+    }
+    
+    if (!product) {
+      product = await Product.findOne({ slug: slugOrId });
+    }
+
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -115,6 +125,14 @@ exports.createProduct = async (req, res, next) => {
       slug = `${base}-${counter++}`;
     }
 
+    // Process tags and colors if they come as strings
+    if (req.body.tags && typeof req.body.tags === 'string') {
+      req.body.tags = req.body.tags.split(',').map(t => t.trim()).filter(t => t);
+    }
+    if (req.body.colors && typeof req.body.colors === 'string') {
+      req.body.colors = req.body.colors.split(',').map(c => c.trim()).filter(c => c);
+    }
+
     const product = await Product.create({ ...req.body, images, slug });
     res.status(201).json({ success: true, data: product });
   } catch (err) {
@@ -126,14 +144,50 @@ exports.createProduct = async (req, res, next) => {
 // @route PUT /api/v1/products/:id
 exports.updateProduct = async (req, res, next) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
-    res.json({ success: true, data: product });
+
+    let updatedImages = [];
+
+    // Parse existing images if provided
+    if (req.body.existingImages) {
+      const existing = JSON.parse(req.body.existingImages);
+      updatedImages = [...existing];
+
+      // Find images to delete from Cloudinary
+      const toDelete = product.images.filter(
+        (img) => !existing.some((e) => e.publicId === img.publicId)
+      );
+      for (const img of toDelete) {
+        await deleteImage(img.publicId);
+      }
+    } else {
+      updatedImages = [...product.images];
+    }
+
+    // Add new images
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map((f) => ({ url: f.path, publicId: f.filename }));
+      updatedImages = [...updatedImages, ...newImages];
+    }
+
+    // Process tags and colors
+    if (req.body.tags && typeof req.body.tags === 'string') {
+      req.body.tags = req.body.tags.split(',').map(t => t.trim()).filter(t => t);
+    }
+    if (req.body.colors && typeof req.body.colors === 'string') {
+      req.body.colors = req.body.colors.split(',').map(c => c.trim()).filter(c => c);
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, images: updatedImages },
+      { new: true, runValidators: true }
+    );
+
+    res.json({ success: true, data: updatedProduct });
   } catch (err) {
     next(err);
   }
