@@ -1,21 +1,28 @@
+import { 
+  MdOutlineWorkspacePremium,
+  MdOutlineKeyboardReturn,
+  MdOutlinePayments,
+  MdOutlineLocalShipping
+} from 'react-icons/md';
+
 const FEATURES = [
   {
-    icon: '✦',
+    Icon: MdOutlineWorkspacePremium,
     title: '100% Original Products',
     desc: 'Every bag is genuine and quality-checked before shipping.',
   },
   {
-    icon: '↩',
+    Icon: MdOutlineKeyboardReturn,
     title: 'Easy 7-Day Returns',
     desc: 'Not satisfied? Return within 7 days, no questions asked.',
   },
   {
-    icon: '💵',
+    Icon: MdOutlinePayments,
     title: 'Cash on Delivery',
     desc: 'Pay when you receive. Safe, convenient, trusted by thousands.',
   },
   {
-    icon: '🚚',
+    Icon: MdOutlineLocalShipping,
     title: 'Fast Nationwide Shipping',
     desc: 'Delivery to all cities in Pakistan in 3–7 business days.',
   },
@@ -23,33 +30,46 @@ const FEATURES = [
 
 export function WhyChooseUs() {
   return (
-    <section className="py-24 px-4" style={{ background: '#1a1815' }}>
+    <section className="py-24 px-4" style={{ background: '#0a0907' }}>
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-14">
-          <p className="section-subtitle mb-3">Our Promise</p>
-          <h2 className="section-title">Why Choose KAARVAN?</h2>
+        <div className="text-center mb-20">
+          <p className="text-xs uppercase tracking-[0.3em] mb-4" style={{ color: '#c8a96e' }}>Our Promise</p>
+          <h2 className="text-4xl md:text-5xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce' }}>
+            Why Choose KAARVAN?
+          </h2>
+          <div className="w-16 h-px mx-auto mt-8" style={{ background: 'linear-gradient(90deg, transparent, #c8a96e, transparent)' }} />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="text-center p-8 transition-all duration-300 hover:-translate-y-2"
-              style={{ background: '#221f1b', border: '1px solid rgba(200,169,110,0.15)' }}
+              className="group flex flex-col items-center text-center cursor-pointer"
             >
-              <div
-                className="w-16 h-16 mx-auto mb-6 flex items-center justify-center text-2xl rounded-full"
-                style={{ background: 'rgba(200,169,110,0.1)', border: '1px solid rgba(200,169,110,0.3)' }}
+              {/* Floating Icon Container */}
+              <div 
+                className="relative w-20 h-20 rounded-full flex items-center justify-center mb-8 transition-all duration-500 group-hover:-translate-y-3"
+                style={{ 
+                  background: 'radial-gradient(circle at top left, #1a1815 0%, #0f0e0c 100%)',
+                  border: '1px solid rgba(200,169,110,0.08)',
+                  boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)'
+                }}
               >
-                {f.icon}
+                {/* Subtle Glow Behind Icon on Hover */}
+                <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" style={{ background: 'rgba(200,169,110,0.1)' }} />
+                
+                <div className="relative text-3xl transition-transform duration-500 group-hover:scale-110" style={{ color: '#c8a96e' }}>
+                  <f.Icon />
+                </div>
               </div>
+              
               <h3
-                style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.25rem', color: '#f0e4ce' }}
-                className="font-semibold mb-3"
+                style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce' }}
+                className="text-xl md:text-2xl font-light mb-4 group-hover:text-[#c8a96e] transition-colors duration-300"
               >
                 {f.title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: '#7a6a54' }}>
+              <p className="text-[11px] uppercase tracking-[0.1em] leading-relaxed max-w-xs mx-auto" style={{ color: '#7a6a54' }}>
                 {f.desc}
               </p>
             </div>

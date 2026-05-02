@@ -23,12 +23,21 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-    password: { type: String, required: true, minlength: 6, select: false },
+    password: { 
+      type: String, 
+      required: function() { return !this.googleId; }, 
+      minlength: 6, 
+      select: false 
+    },
     phone: {
       type: String,
       trim: true,
       validate: {
-        validator: (v) => /^03\d{9}$/.test(v),
+        validator: function(v) {
+          // Phone is optional if using Google Login, but if provided it must match format
+          if ((!v || v === '') && this.googleId) return true;
+          return /^03\d{9}$/.test(v);
+        },
         message: 'Phone must be Pakistani format: 03XXXXXXXXX',
       },
     },
@@ -36,6 +45,11 @@ const userSchema = new mongoose.Schema(
     addresses: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
     refreshToken: { type: String, select: false },
+    googleId: { type: String, select: false },
+    isVerified: { type: Boolean, default: false },
+    verificationToken: { type: String, select: false },
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpire: { type: Date, select: false }
   },
   { timestamps: true }
 );

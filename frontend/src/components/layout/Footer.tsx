@@ -2,6 +2,12 @@
 import Link from 'next/link';
 import { FiInstagram, FiFacebook, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import { 
+  MdOutlineWorkspacePremium,
+  MdOutlineKeyboardReturn,
+  MdOutlineLock,
+  MdOutlineLocalShipping
+} from 'react-icons/md';
 
 const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
 
@@ -125,15 +131,17 @@ export function Footer() {
         <div className="mt-12 pt-8" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { icon: '✦', title: '100% Original', desc: 'Authentic products only' },
-              { icon: '↩', title: 'Easy Returns', desc: '7-day return policy' },
-              { icon: '🔒', title: 'Secure Payment', desc: 'JazzCash & COD' },
-              { icon: '🚚', title: 'Nationwide Delivery', desc: 'All cities in Pakistan' },
+              { Icon: MdOutlineWorkspacePremium, title: '100% Original', desc: 'Authentic products only' },
+              { Icon: MdOutlineKeyboardReturn, title: 'Easy Returns', desc: '7-day return policy' },
+              { Icon: MdOutlineLock, title: 'Secure Payment', desc: 'JazzCash & COD' },
+              { Icon: MdOutlineLocalShipping, title: 'Nationwide Delivery', desc: 'All cities in Pakistan' },
             ].map((b) => (
-              <div key={b.title} className="py-4">
-                <div className="text-2xl mb-2">{b.icon}</div>
+              <div key={b.title} className="py-4 flex flex-col items-center">
+                <div className="text-2xl mb-3 transition-transform duration-300 hover:scale-110" style={{ color: '#c8a96e' }}>
+                  <b.Icon />
+                </div>
                 <p className="text-sm font-semibold mb-1" style={{ color: '#c8a96e' }}>{b.title}</p>
-                <p className="text-xs" style={{ color: '#7a6a54' }}>{b.desc}</p>
+                <p className="text-[10px] uppercase tracking-[0.1em]" style={{ color: '#7a6a54' }}>{b.desc}</p>
               </div>
             ))}
           </div>
@@ -145,8 +153,8 @@ export function Footer() {
           <p className="text-xs" style={{ color: '#7a6a54' }}>
             © {new Date().getFullYear()} KAARVAN. All rights reserved.
           </p>
-          <p className="text-xs" style={{ color: '#7a6a54' }}>
-            Made with ♥ in Pakistan 🇵🇰
+          <p className="text-xs uppercase tracking-widest" style={{ color: '#7a6a54' }}>
+            Designed in Pakistan
           </p>
         </div>
       </div>

@@ -1,25 +1,55 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FiArrowRight } from 'react-icons/fi';
 
+const bgImages = [
+  'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=2000&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=2000&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?q=80&w=2000&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?q=80&w=2000&auto=format&fit=crop'
+];
+
 export function HeroSection() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % bgImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0f0e0c]">
+      {/* Background Images */}
+      {bgImages.map((img, index) => (
+        <div
+          key={img}
+          className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ease-in-out ${
+            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ backgroundImage: `url("${img}")` }}
+        />
+      ))}
+
+      {/* Dark overlay for readability */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(135deg, #0a0907 0%, #1a1512 40%, #221a14 70%, #0f0e0c 100%)',
+          background: 'linear-gradient(135deg, rgba(10, 9, 7, 0.85) 0%, rgba(26, 21, 18, 0.7) 50%, rgba(15, 14, 12, 0.95) 100%)',
         }}
       />
 
-      {/* Decorative circles */}
+      {/* Decorative Blob Gradients over the picture */}
       <div
-        className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full opacity-10"
-        style={{ background: 'radial-gradient(circle, #c8a96e 0%, transparent 70%)' }}
+        className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full mix-blend-screen filter blur-[80px] animate-pulse opacity-40"
+        style={{ background: 'radial-gradient(circle, rgba(200,169,110,0.5) 0%, transparent 70%)' }}
       />
       <div
-        className="absolute bottom-1/4 left-1/3 w-64 h-64 rounded-full opacity-5"
-        style={{ background: 'radial-gradient(circle, #c8a96e 0%, transparent 70%)' }}
+        className="absolute bottom-1/4 left-1/4 w-[600px] h-[600px] rounded-full mix-blend-screen filter blur-[100px] opacity-30"
+        style={{ background: 'radial-gradient(circle, rgba(200,169,110,0.4) 0%, transparent 70%)' }}
       />
 
       {/* Content */}

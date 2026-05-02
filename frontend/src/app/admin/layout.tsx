@@ -1,12 +1,14 @@
 'use client';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
-import { FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiLogOut } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiLogOut, FiX, FiMenu } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {

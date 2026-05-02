@@ -54,7 +54,7 @@ const productSchema = new mongoose.Schema(
     reviews: [reviewSchema],
     tags: [{ type: String }],
   },
-  { timestamps: true }
+  { timestamps: true, suppressReservedKeysWarning: true }
 );
 
 // Auto-generate slug before save

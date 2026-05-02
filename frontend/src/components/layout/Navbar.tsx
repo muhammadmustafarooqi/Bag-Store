@@ -119,22 +119,29 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Premium Search Overlay */}
         {searchOpen && (
-          <div className="pb-4 animate-fadeIn">
-            <form onSubmit={handleSearch} className="flex gap-2">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search bags, backpacks, wallets..."
-                className="input-field flex-1"
-                autoFocus
-              />
-              <button type="submit" className="btn-primary px-4 py-3">
-                <FiSearch size={16} />
+          <div className="absolute inset-0 bg-[#0a0907]/95 backdrop-blur-md z-50 flex items-center justify-center animate-fadeIn shadow-lg shadow-black/50 border-b border-[rgba(200,169,110,0.1)]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center gap-4 h-20">
+              <FiSearch className="text-[#c8a96e] text-2xl hidden sm:block" />
+              <form onSubmit={handleSearch} className="flex-1 flex h-full items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search collections, bags, wallets..."
+                  className="w-full h-full bg-transparent border-none outline-none text-2xl sm:text-3xl text-[#f0e4ce] placeholder-[#7a6a54] font-light"
+                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                  autoFocus
+                />
+              </form>
+              <button
+                onClick={() => setSearchOpen(false)}
+                className="p-2 text-[#7a6a54] hover:text-[#c8a96e] transition-transform duration-300 hover:rotate-90"
+              >
+                <FiX size={32} />
               </button>
-            </form>
+            </div>
           </div>
         )}
 
