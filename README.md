@@ -20,6 +20,8 @@ A full-stack e-commerce platform for the Pakistani market, built with Next.js 14
 - Node.js 18+
 - MongoDB (local or Atlas)
 - Cloudinary account
+- Gmail account (for emails)
+- Google Cloud account (for OAuth)
 - JazzCash merchant account (sandbox for testing)
 
 ---
@@ -41,32 +43,45 @@ Edit `.env` with your credentials:
 
 ```env
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/kaarvan
-JWT_SECRET=your_very_long_secret_here
-JWT_REFRESH_SECRET=another_very_long_secret_here
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-JAZZCASH_MERCHANT_ID=your_merchant_id
+MONGO_URI=your_mongo_uri
+JWT_SECRET=your_secret
+JWT_REFRESH_SECRET=your_refresh_secret
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your_name
+CLOUDINARY_API_KEY=your_key
+CLOUDINARY_API_SECRET=your_secret
+
+# Email (Nodemailer)
+EMAIL_SERVICE=gmail
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+FROM_NAME=KAARVAN
+FROM_EMAIL=no-reply@kaarvan.pk
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your_google_id
+GOOGLE_CLIENT_SECRET=your_google_secret
+
+# Client URLs
+CLIENT_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:3000
+
+# Payments
+JAZZCASH_MERCHANT_ID=your_id
 JAZZCASH_PASSWORD=your_password
 JAZZCASH_INTEGRITY_SALT=your_integrity_salt
 JAZZCASH_RETURN_URL=http://localhost:5000/api/v1/payments/jazzcash/callback
-CLIENT_URL=http://localhost:3000
 ```
 
 ### 3. Seed the database
 ```bash
 npm run seed
 ```
-This creates:
-- Admin account: `admin@kaarvan.pk` / `Admin@1234`
-- 8 product categories
-- 5 sample products
 
 ### 4. Start the server
 ```bash
-npm run dev   # Development (nodemon)
-npm start     # Production
+npm run dev
 ```
 
 Server runs at: `http://localhost:5000`  
@@ -90,6 +105,7 @@ cp .env.example .env.local
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
 NEXT_PUBLIC_WHATSAPP_NUMBER=923001234567
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
 ### 3. Start development server
@@ -98,6 +114,17 @@ npm run dev
 ```
 
 Frontend runs at: `http://localhost:3000`
+
+---
+
+## 🛡️ Secure Authentication
+
+The platform now features a professional-grade authentication system:
+- **Email Verification**: Mandatory verification for new accounts.
+- **Password Reset**: Secure token-based flow for forgotten passwords.
+- **Google OAuth**: One-click registration and login.
+- **JWT Protection**: Short-lived access tokens with secure refresh tokens.
+- **Luxury UI**: Redesigned auth pages with "Classic Luxury" minimalist aesthetics.
 
 ---
 
@@ -149,13 +176,14 @@ Frontend runs at: `http://localhost:3000`
 Base URL: `http://localhost:5000/api/v1`
 
 ### Auth
-| Method | Route | Auth |
-|--------|-------|------|
-| POST | `/auth/register` | Public |
-| POST | `/auth/login` | Public |
-| POST | `/auth/logout` | Public |
-| POST | `/auth/refresh-token` | Public |
-| GET | `/auth/me` | Required |
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | `/auth/register` | Register & send verification email |
+| POST | `/auth/login` | Secure login |
+| POST | `/auth/verify-email` | Verify account via token |
+| POST | `/auth/forgot-password`| Request reset link |
+| POST | `/auth/reset-password` | Set new password via token |
+| POST | `/auth/google` | Google OAuth verification |
 
 ### Products
 | Method | Route | Auth |
@@ -192,8 +220,11 @@ Base URL: `http://localhost:5000/api/v1`
 | `/checkout` | Checkout with COD/JazzCash |
 | `/order-success/[orderId]` | Order confirmation |
 | `/account` | User profile, orders, wishlist |
-| `/auth/login` | Login |
-| `/auth/register` | Register |
+| `/auth/login` | Luxury Login page |
+| `/auth/register` | Luxury Joining page |
+| `/auth/verify-email` | Email verification handler |
+| `/auth/forgot-password`| Reset request form |
+| `/auth/reset-password` | New password form |
 | `/admin/dashboard` | Admin stats & charts |
 | `/admin/products` | Product management |
 | `/admin/orders` | Order management |
@@ -204,25 +235,20 @@ Base URL: `http://localhost:5000/api/v1`
 
 - **Font Display**: Cormorant Garamond (serif, elegant)
 - **Font UI**: Outfit (clean, modern)
-- **Primary Background**: `#0f0e0c` (very dark warm black)
+- **Primary Background**: `#050505` (Deep luxury black)
 - **Gold Accent**: `#c8a96e`
 - **Cream Text**: `#f0e4ce`
-- **Green (Success)**: `#2d6a4f`
 
 ---
 
 ## 🇵🇰 Pakistan-Specific Features
 
 - ✅ All prices in **Pakistani Rupees (Rs)**
-- ✅ **Cash on Delivery** (COD) is default payment method
-- ✅ **JazzCash** Mobile Wallet integration
-- ✅ Pakistani phone number validation (`03XXXXXXXXX`)
-- ✅ All major **Pakistani cities** in dropdowns
-- ✅ All **provinces** (Punjab, Sindh, KPK, Balochistan, AJK, GB, Islamabad)
-- ✅ Free shipping threshold: **Rs 2,000**
-- ✅ **WhatsApp** floating contact button
-- ✅ Delivery estimate: **3-7 business days**
-- ✅ Auto-generated Order IDs: **KRV-2025-0001**
+- ✅ **Cash on Delivery** (COD) default
+- ✅ **JazzCash** Wallet integration
+- ✅ Pakistani phone validation (`03XXXXXXXXX`)
+- ✅ All **provinces & major cities**
+- ✅ **WhatsApp** floating support
 
 ---
 
