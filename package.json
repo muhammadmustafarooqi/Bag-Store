@@ -1,12 +1,15 @@
 {
-  "name": "karwan",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "kaarvan-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently \"npm run dev -w @kaarvan/frontend\" \"npm run dev -w @kaarvan/backend\"",
+    "build": "npm run build --workspaces --if-present"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
 }
