@@ -204,7 +204,7 @@ export default function AccountPage() {
                     {ordersData.data.map((order) => (
                       <Link
                         key={order._id}
-                        href={`/account/orders/${order._id}`}
+                        href={`/account/orders/${order.orderId}`}
                       >
                         <div
                           className="flex items-center justify-between p-4 transition-all hover:border-[rgba(200,169,110,0.4)]"

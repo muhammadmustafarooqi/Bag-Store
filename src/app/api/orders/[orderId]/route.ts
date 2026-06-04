@@ -23,3 +23,30 @@ export async function GET(req: NextRequest, { params }: { params: { orderId: str
     return NextResponse.json({ success: false, message: err.message }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, { params }: { params: { orderId: string } }) {
+  await connectDB();
+  const admin = await getAuthUser(req, true);
+  if (!admin) {
+    return NextResponse.json({ success: false, message: 'Admin access required' }, { status: 403 });
+  }
+
+  try {
+    const { orderId } = params;
+    let idFilter = {};
+    if (orderId.match(/^[0-9a-fA-F]{24}$/)) {
+        idFilter = { _id: orderId };
+    } else {
+        idFilter = { orderId };
+    }
+
+    const order = await Order.findOneAndDelete(idFilter);
+    if (!order) {
+      return NextResponse.json({ success: false, message: 'Order not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, message: 'Order deleted successfully' });
+  } catch (err: any) {
+    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+  }
+}

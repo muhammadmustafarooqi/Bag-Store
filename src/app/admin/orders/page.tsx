@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import Link from 'next/link';
-import { FiSearch, FiEye } from 'react-icons/fi';
+import { FiSearch, FiEye, FiTrash2 } from 'react-icons/fi';
 import { formatCurrency } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
@@ -32,6 +32,17 @@ export default function AdminOrdersPage() {
       refetch();
     } catch {
       toast.error('Failed to update status');
+    }
+  };
+
+  const deleteOrder = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) return;
+    try {
+      await api.delete(`/orders/${id}`);
+      toast.success('Order deleted successfully');
+      refetch();
+    } catch {
+      toast.error('Failed to delete order');
     }
   };
 
@@ -118,11 +129,16 @@ export default function AdminOrdersPage() {
                     <td className="px-4 py-3 text-xs" style={{ color: '#7a6a54' }}>
                       {new Date(o.placedAt).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 flex items-center gap-2">
                       <Link href={`/admin/orders/${o.orderId}`}
                         className="p-1.5 hover:text-[#c8a96e] transition-colors inline-block" style={{ color: '#7a6a54' }}>
                         <FiEye size={14} />
                       </Link>
+                      <button
+                        onClick={() => deleteOrder(o.orderId)}
+                        className="p-1.5 hover:text-red-500 transition-colors inline-block" style={{ color: '#7a6a54' }}>
+                        <FiTrash2 size={14} />
+                      </button>
                     </td>
                   </tr>
                 ))}
