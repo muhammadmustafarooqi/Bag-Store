@@ -42,11 +42,11 @@ function LoginPageContent() {
         const { accessToken, refreshToken, user } = res.data.data;
 
         // Manual login using tokens returned from backend
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("kaarvan_token", accessToken);
+        localStorage.setItem("kaarvan_refresh_token", refreshToken);
         useAuthStore.setState({
           user,
-          accessToken,
+          token: accessToken,
           refreshToken,
           isAuthenticated: true,
         });
@@ -207,7 +207,6 @@ function LoginPageContent() {
     </div>
   );
 }
-
 
 export default function LoginPage() {
   return (

@@ -61,11 +61,11 @@ export default function RegisterPage() {
         });
         const { accessToken, refreshToken, user } = res.data.data;
 
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("kaarvan_token", accessToken);
+        localStorage.setItem("kaarvan_refresh_token", refreshToken);
         useAuthStore.setState({
           user,
-          accessToken,
+          token: accessToken,
           refreshToken,
           isAuthenticated: true,
         });

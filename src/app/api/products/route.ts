@@ -3,6 +3,14 @@ import Product from '@/lib/models/Product';
 import connectDB from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 import slugify from 'slugify';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function GET(req: NextRequest) {
   await connectDB();
@@ -80,7 +88,55 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json();
+    const contentType = req.headers.get('content-type') || '';
+    let body: any = {};
+    let newImages: any[] = [];
+
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await req.formData();
+      formData.forEach((value, key) => {
+        if (key !== 'images') {
+          body[key] = value;
+        }
+      });
+
+      // Parse types
+      if (body.price !== undefined) body.price = Number(body.price);
+      if (body.stock !== undefined) body.stock = Number(body.stock);
+      if (body.salePrice !== undefined && body.salePrice !== '') {
+        body.salePrice = Number(body.salePrice);
+      } else {
+        body.salePrice = undefined;
+      }
+      if (body.onSale !== undefined) body.onSale = body.onSale === 'true';
+      if (body.isFeatured !== undefined) body.isFeatured = body.isFeatured === 'true';
+      if (body.isNew !== undefined) body.isNew = body.isNew === 'true';
+
+      const files = formData.getAll('images');
+      if (files && files.length > 0 && files[0] && (files[0] as any).name) {
+        const uploadPromises = files.map(async (file: any) => {
+          const arrayBuffer = await file.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+          return new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+              { folder: `kaarvan/products/${body.category || 'misc'}` },
+              (error, result) => {
+                if (error) return reject(error);
+                resolve({
+                  url: result?.secure_url,
+                  publicId: result?.public_id,
+                });
+              }
+            );
+            uploadStream.end(buffer);
+          });
+        });
+        newImages = await Promise.all(uploadPromises);
+      }
+      body.images = newImages;
+    } else {
+      body = await req.json();
+    }
     
     // Auto-generate slug
     const base = slugify(body.name, { lower: true, strict: true });

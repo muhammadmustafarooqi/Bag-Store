@@ -70,13 +70,12 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-orderSchema.pre('save', async function (next) {
+orderSchema.pre('save', async function () {
   if (!this.orderId) {
     const year = new Date().getFullYear();
     const count = await mongoose.model('Order').countDocuments();
     this.orderId = `KRV-${year}-${String(count + 1).padStart(4, '0')}`;
   }
-  next();
 });
 
 orderSchema.index({ user: 1 });

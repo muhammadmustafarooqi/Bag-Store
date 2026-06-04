@@ -18,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '100000000000-dummy.apps.googleusercontent.com'}>
       <QueryClientProvider client={queryClient}>
         {children}
         <Toaster
