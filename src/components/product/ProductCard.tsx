@@ -152,7 +152,7 @@ export function ProductCard({ product }: Props) {
           </h3>
 
           {/* Rating */}
-          {product.ratings.count > 0 && (
+          {product.ratings?.count > 0 && (
             <div className="flex items-center gap-1 mb-2">
               <FiStar size={12} fill="#c8a96e" className="text-[#c8a96e]" />
               <span className="text-xs" style={{ color: '#7a6a54' }}>
