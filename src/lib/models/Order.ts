@@ -73,8 +73,22 @@ const orderSchema = new mongoose.Schema(
 orderSchema.pre('save', async function () {
   if (!this.orderId) {
     const year = new Date().getFullYear();
-    const count = await mongoose.model('Order').countDocuments();
-    this.orderId = `KRV-${year}-${String(count + 1).padStart(4, '0')}`;
+    const prefix = `KRV-${year}-`;
+    
+    // Find the latest order for this year to determine the next sequence number
+    const lastOrder = await mongoose.model('Order').findOne({ orderId: new RegExp(`^${prefix}`) })
+      .sort({ orderId: -1 })
+      .exec();
+      
+    let nextSeq = 1;
+    if (lastOrder && lastOrder.orderId) {
+      const parts = lastOrder.orderId.split('-');
+      if (parts.length === 3) {
+        nextSeq = parseInt(parts[2], 10) + 1;
+      }
+    }
+    
+    this.orderId = `${prefix}${String(nextSeq).padStart(4, '0')}`;
   }
 });
 
