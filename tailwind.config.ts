@@ -20,8 +20,8 @@ const config: Config = {
         'kaarvan-red': '#8b1a1a',
       },
       fontFamily: {
-        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        serif: ['"Space Mono"', 'monospace'],
+        sans: ['"Roboto Mono"', 'monospace'],
       },
       animation: {
         'shimmer': 'shimmer 1.5s infinite',

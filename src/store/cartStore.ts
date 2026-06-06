@@ -6,8 +6,8 @@ import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '@/lib/constants';
 interface CartStore {
   items: CartItem[];
   addItem: (product: Product, qty: number, color: string) => void;
-  removeItem: (productId: string) => void;
-  updateQty: (productId: string, qty: number) => void;
+  removeItem: (productId: string, color: string) => void;
+  updateQty: (productId: string, color: string, qty: number) => void;
   clearCart: () => void;
   total: () => number;
   subtotal: () => number;
@@ -39,13 +39,13 @@ export const useCartStore = create<CartStore>()(
         });
       },
 
-      removeItem: (productId) =>
-        set((state) => ({ items: state.items.filter((i) => i.product._id !== productId) })),
+      removeItem: (productId, color) =>
+        set((state) => ({ items: state.items.filter((i) => !(i.product._id === productId && i.color === color)) })),
 
-      updateQty: (productId, qty) =>
+      updateQty: (productId, color, qty) =>
         set((state) => ({
           items: state.items.map((i) =>
-            i.product._id === productId ? { ...i, qty } : i
+            (i.product._id === productId && i.color === color) ? { ...i, qty } : i
           ),
         })),
 

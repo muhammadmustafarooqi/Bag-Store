@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { FiUpload, FiX } from 'react-icons/fi';
@@ -8,6 +9,7 @@ import { PRODUCT_CATEGORIES } from '@/lib/constants';
 
 export default function NewProductPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -45,6 +47,7 @@ export default function NewProductPage() {
 
       await api.post('/products', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       toast.success('Product created!');
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
       router.push('/admin/products');
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to create product');
@@ -56,7 +59,7 @@ export default function NewProductPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>Add New Product</h1>
+        <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>Add New Product</h1>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -164,8 +167,9 @@ export default function NewProductPage() {
               ].map((f) => (
                 <div key={f.key}>
                   <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>{f.label}</label>
-                  <input type="text" value={(form as any)[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                    className="input-field w-full text-sm" />
+                  <input type={f.key === 'price' || f.key === 'stock' ? 'number' : 'text'} 
+                    value={(form as any)[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                    className="input-field w-full" required={f.label.includes('*')} />
                 </div>
               ))}
             </div>

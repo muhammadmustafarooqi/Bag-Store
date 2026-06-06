@@ -43,7 +43,7 @@ export function WhyChooseUs() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <p className="text-xs uppercase tracking-[0.3em] mb-4" style={{ color: '#c8a96e' }}>Our Promise</p>
-          <h2 className="text-4xl md:text-5xl font-light" style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce' }}>
+          <h2 className="text-4xl md:text-5xl font-light" style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce' }}>
             Why Choose KAARVAN?
           </h2>
           <div className="w-16 h-px mx-auto mt-8" style={{ background: 'linear-gradient(90deg, transparent, #c8a96e, transparent)' }} />
@@ -74,7 +74,7 @@ export function WhyChooseUs() {
               </div>
               
               <h3
-                style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce' }}
+                style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce' }}
                 className="text-xl md:text-2xl font-light mb-4 group-hover:text-[#c8a96e] transition-colors duration-300"
               >
                 {f.title}

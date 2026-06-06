@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuthStore } from '@/store/authStore';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
 
@@ -19,12 +20,12 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor — handle 401 token refresh
+// Response interceptor — handle 401/403 token refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
+    if ((error.response?.status === 401 || error.response?.status === 403) && !original._retry) {
       original._retry = true;
       try {
         const refreshToken = localStorage.getItem('kaarvan_refresh_token');
@@ -32,6 +33,7 @@ api.interceptors.response.use(
         const { data } = await axios.post(`${API_BASE}/auth/refresh-token`, { refreshToken });
         localStorage.setItem('kaarvan_token', data.data.accessToken);
         localStorage.setItem('kaarvan_refresh_token', data.data.refreshToken);
+        useAuthStore.getState().setTokens(data.data.accessToken, data.data.refreshToken);
         original.headers.Authorization = `Bearer ${data.data.accessToken}`;
         return api(original);
       } catch {

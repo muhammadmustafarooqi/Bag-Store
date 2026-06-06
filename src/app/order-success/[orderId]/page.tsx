@@ -14,16 +14,19 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
   const { data, isLoading } = useOrder(params.orderId);
   const order = data?.data;
   const { width, height } = useWindowSize();
-  const [showConfetti, setShowConfetti] = useState(true);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
+    if (isLoading) return;
+
     const audio = new Audio('/success.mp3');
     audio.play().catch((err) => console.log('Audio play blocked:', err));
     
+    setShowConfetti(true);
     // Stop confetti after 5 seconds
     const timer = setTimeout(() => setShowConfetti(false), 5000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [isLoading]);
 
   if (isLoading) {
     return (
@@ -51,7 +54,7 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
           <FiCheckCircle size={48} className="text-green-500" />
         </div>
 
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#f0e4ce' }} className="mb-3">
+        <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#f0e4ce' }} className="mb-3">
           Order Placed Successfully!
         </h1>
         <p className="mb-2 text-sm" style={{ color: '#7a6a54' }}>
@@ -61,7 +64,7 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
         {/* Order ID */}
         <div className="my-8 p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.2)' }}>
           <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>Order ID</p>
-          <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.75rem', color: '#c8a96e' }} className="font-bold">
+          <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.75rem', color: '#c8a96e' }} className="font-bold">
             {params.orderId}
           </p>
 
@@ -120,7 +123,7 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
         </div>
 
         {isLoading || !order ? null : (
-          <Link href={`/account/orders/${order._id}`} className="block mt-4 text-sm" style={{ color: '#7a6a54' }}>
+          <Link href={`/account/orders/${order.orderId}`} className="block mt-4 text-sm" style={{ color: '#7a6a54' }}>
             Track your order →
           </Link>
         )}

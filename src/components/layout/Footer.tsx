@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { FiInstagram, FiFacebook, FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 import { 
   MdOutlineWorkspacePremium,
   MdOutlineKeyboardReturn,
@@ -19,11 +20,11 @@ export function Footer() {
         <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <p className="section-subtitle mb-1">Stay in the loop</p>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.75rem', color: '#f0e4ce' }}>
+            <h3 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.75rem', color: '#f0e4ce' }}>
               Subscribe for Exclusive Offers
             </h3>
           </div>
-          <form className="flex w-full md:w-auto gap-0" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex w-full md:w-auto gap-0" onSubmit={(e) => { e.preventDefault(); toast.success('Subscribed successfully!'); }}>
             <input
               type="email"
               placeholder="Your email address"
@@ -40,7 +41,7 @@ export function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link href="/">
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', fontWeight: 700, letterSpacing: '0.2em', color: '#c8a96e' }}>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', fontWeight: 700, letterSpacing: '0.2em', color: '#c8a96e' }}>
                 KAARVAN
               </span>
             </Link>
@@ -70,12 +71,21 @@ export function Footer() {
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#c8a96e' }}>Shop</h4>
             <ul className="space-y-3">
-              {['Handbags', 'Backpacks', 'Laptop Bags', 'Tote Bags', 'Travel Bags', 'Clutches', 'Wallets', 'School Bags'].map((cat) => (
-                <li key={cat}>
-                  <Link href={`/shop?category=${encodeURIComponent(cat.toLowerCase())}`}
+              {[
+                { label: 'Handbags', val: 'Handbag' },
+                { label: 'Backpacks', val: 'Backpack' },
+                { label: 'Laptop Bags', val: 'Laptop Bag' },
+                { label: 'Tote Bags', val: 'Tote' },
+                { label: 'Travel Bags', val: 'Travel Bag' },
+                { label: 'Clutches', val: 'Clutch' },
+                { label: 'Wallets', val: 'Wallet' },
+                { label: 'School Bags', val: 'School Bag' },
+              ].map((cat) => (
+                <li key={cat.label}>
+                  <Link href={`/shop?category=${encodeURIComponent(cat.val)}`}
                     className="text-sm transition-colors duration-200 hover:text-[#c8a96e]"
                     style={{ color: '#7a6a54' }}>
-                    {cat}
+                    {cat.label}
                   </Link>
                 </li>
               ))}
@@ -88,12 +98,12 @@ export function Footer() {
             <ul className="space-y-3">
               {[
                 { href: '/track-order', label: 'Track Order' },
-                { href: '/about', label: 'About Us' },
-                { href: '/contact', label: 'Contact Us' },
-                { href: '/shipping-policy', label: 'Shipping Policy' },
-                { href: '/return-policy', label: 'Return Policy' },
-                { href: '/privacy-policy', label: 'Privacy Policy' },
-                { href: '/terms', label: 'Terms & Conditions' },
+                { href: '/coming-soon', label: 'About Us' },
+                { href: '/coming-soon', label: 'Contact Us' },
+                { href: '/coming-soon', label: 'Shipping Policy' },
+                { href: '/coming-soon', label: 'Return Policy' },
+                { href: '/coming-soon', label: 'Privacy Policy' },
+                { href: '/coming-soon', label: 'Terms & Conditions' },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-sm transition-colors duration-200 hover:text-[#c8a96e]" style={{ color: '#7a6a54' }}>

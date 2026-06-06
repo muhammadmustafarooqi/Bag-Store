@@ -61,7 +61,7 @@ export function HeroSection() {
         <div className="animate-fadeIn">
           <p className="section-subtitle mb-4 text-sm md:text-base">Pakistan&apos;s Premier Bag Destination</p>
           <h1
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            style={{ fontFamily: "'Space Mono', monospace" }}
             className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold leading-tight md:leading-none mb-6"
           >
             <span style={{ color: '#f0e4ce' }}>Carry What</span>
@@ -88,7 +88,7 @@ export function HeroSection() {
               </Link>
             </CursorHover>
             <CursorHover title="Fresh Drops" subtitle="Be the first" icon="🔥">
-              <Link href="/shop?filter=new" className="btn-outline text-base px-8 py-4">
+              <Link href="/shop?isNewArrival=true" className="btn-outline text-base px-8 py-4">
                 New Arrivals
               </Link>
             </CursorHover>
@@ -104,7 +104,7 @@ export function HeroSection() {
               <div key={stat.label} className="text-center p-4 sm:p-0" style={{ background: 'rgba(200,169,110,0.02)', border: '1px solid rgba(200,169,110,0.05)', borderRadius: '4px' }}>
                 <CursorHover title={stat.label === 'Happy Customers' ? '5 Star Ratings!' : stat.label === 'Bag Styles' ? 'Endless Choices' : 'Fast Delivery'} subtitle={stat.num} icon="🚀">
                   <p
-                    style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#c8a96e' }}
+                    style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#c8a96e' }}
                     className="font-bold md:text-3xl"
                   >
                     {stat.num}

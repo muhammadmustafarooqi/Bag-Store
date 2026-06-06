@@ -41,7 +41,7 @@ function VerifyEmailContent() {
         }}>
         <div className="absolute inset-0 bg-[#c8a96e] blur-[150px] opacity-10 rounded-full -z-10" />
         
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }} className="mb-6 font-light">
+        <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }} className="mb-6 font-light">
           {status === 'loading' && 'Verifying Email...'}
           {status === 'success' && 'Email Verified'}
           {status === 'error' && 'Verification Failed'}

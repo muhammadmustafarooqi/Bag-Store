@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useProduct, useProducts } from '@/hooks/useProducts';
 import { useCartStore } from '@/store/cartStore';
@@ -40,7 +41,9 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
+  const clearCart = useCartStore((s) => s.clearCart);
   const { toggle, isWishlisted } = useWishlistStore();
   const { isAuthenticated } = useAuthStore();
 
@@ -74,6 +77,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     toast.success('Added to cart!');
   };
 
+  const handleBuyNow = () => {
+    clearCart();
+    addItem(product, qty, selectedColor || product.colors[0] || '');
+    router.push('/checkout');
+  };
+
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthenticated) {
@@ -85,6 +94,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       await api.post(`/products/${product._id}/reviews`, { rating: reviewRating, comment: reviewComment });
       toast.success('Review submitted!');
       setReviewComment('');
+      setTimeout(() => window.location.reload(), 1500);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to submit review');
     } finally {
@@ -148,7 +158,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           {/* Product Info */}
           <div className="py-4">
             <p className="section-subtitle mb-2">{product.category}</p>
-            <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#f0e4ce' }}
+            <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: 'clamp(2rem, 4vw, 3rem)', color: '#f0e4ce' }}
               className="font-semibold mb-3">
               {product.name}
             </h1>
@@ -170,7 +180,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
             {/* Price */}
             <div className="flex items-end gap-3 mb-6">
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: '#c8a96e' }}
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', color: '#c8a96e' }}
                 className="font-semibold">
                 {formatCurrency(displayPrice)}
               </span>
@@ -246,15 +256,24 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
             </div>
 
             {/* Buttons */}
-            <div ref={addToCartRef} className="flex gap-3 mb-8">
-              <button
-                onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="flex-1 btn-primary flex items-center gap-2 justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <FiShoppingBag size={18} />
-                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-              </button>
+            <div ref={addToCartRef} className="flex gap-3 mb-8 flex-col sm:flex-row">
+              <div className="flex gap-3 flex-1">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={product.stock === 0}
+                  className="flex-1 btn-outline flex items-center gap-2 justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FiShoppingBag size={18} />
+                  Add to Cart
+                </button>
+                <button
+                  onClick={handleBuyNow}
+                  disabled={product.stock === 0}
+                  className="flex-1 btn-primary flex items-center gap-2 justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Buy Now
+                </button>
+              </div>
               <button
                 onClick={() => toggle(product._id)}
                 className="p-4 transition-all duration-200"
@@ -290,12 +309,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
         {/* Tabs */}
         <div className="mt-16">
-          <div className="flex border-b" style={{ borderColor: 'rgba(200,169,110,0.15)' }}>
+          <div className="flex border-b overflow-x-auto whitespace-nowrap" style={{ borderColor: 'rgba(200,169,110,0.15)', msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
             {(['description', 'details', 'reviews'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className="px-6 py-4 text-sm font-medium uppercase tracking-widest transition-colors relative"
+                className="px-4 sm:px-6 py-4 text-xs sm:text-sm font-medium uppercase tracking-widest transition-colors relative flex-shrink-0"
                 style={{ color: activeTab === tab ? '#c8a96e' : '#7a6a54' }}
               >
                 {tab}
@@ -359,7 +378,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 {/* Review Form */}
                 {isAuthenticated && (
                   <form onSubmit={handleSubmitReview} className="max-w-lg">
-                    <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-4">
+                    <h4 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-4">
                       Write a Review
                     </h4>
                     <div className="flex gap-2 mb-4">
@@ -422,14 +441,23 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                   <span className="text-sm" style={{ color: '#f0e4ce' }}>{selectedColor || product.colors[0]}</span>
                 </div>
               )}
-              <button
-                onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="btn-primary w-full sm:w-auto flex items-center gap-2 justify-center py-3 disabled:opacity-50"
-              >
-                <FiShoppingBag size={18} />
-                {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button
+                  onClick={handleAddToCart}
+                  disabled={product.stock === 0}
+                  className="btn-outline w-full sm:w-auto flex items-center gap-2 justify-center py-3 px-4 disabled:opacity-50 text-sm"
+                >
+                  <FiShoppingBag size={16} />
+                  Cart
+                </button>
+                <button
+                  onClick={handleBuyNow}
+                  disabled={product.stock === 0}
+                  className="btn-primary w-full sm:w-auto flex items-center gap-2 justify-center py-3 px-4 disabled:opacity-50 text-sm"
+                >
+                  Buy Now
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -55,7 +55,7 @@ export default function AdminCouponsPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>Coupons</h1>
+          <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>Coupons</h1>
           <p className="text-sm" style={{ color: '#7a6a54' }}>Manage discount codes</p>
         </div>
         <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-2">
@@ -107,7 +107,7 @@ export default function AdminCouponsPage() {
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
           <div className="w-full max-w-md p-8" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.2)' }}>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
+            <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
               Create Coupon
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">

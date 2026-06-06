@@ -22,7 +22,7 @@ export default function AdminCustomersPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>Customers</h1>
+        <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>Customers</h1>
         <p className="text-sm" style={{ color: '#7a6a54' }}>{data?.pagination?.total || 0} registered users</p>
       </div>
 

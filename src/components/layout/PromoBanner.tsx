@@ -28,7 +28,7 @@ export function PromoBanner() {
           <div>
             <p className="section-subtitle mb-2 text-xs uppercase tracking-[0.2em]" style={{ color: '#c8a96e' }}>Limited Time Offer</p>
             <h2
-              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', color: '#f0e4ce' }}
+              style={{ fontFamily: "'Space Mono', monospace", fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', color: '#f0e4ce' }}
               className="flex items-center gap-2 leading-tight"
             >
               <span className="sm:hidden text-2xl" style={{ color: '#c8a96e' }}><MdOutlineLocalShipping /></span>

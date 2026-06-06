@@ -126,7 +126,7 @@ export default function TrackOrderPage() {
                 style={{ background: 'rgba(200,169,110,0.1)', border: '1px solid rgba(200,169,110,0.3)' }}>
                 <StatusIcon size={32} style={{ color: '#c8a96e' }} />
               </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: '#f0e4ce' }} className="capitalize mb-2">
+              <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', color: '#f0e4ce' }} className="capitalize mb-2">
                 Order {orderData.orderStatus}
               </h2>
               <p style={{ color: '#7a6a54' }}>

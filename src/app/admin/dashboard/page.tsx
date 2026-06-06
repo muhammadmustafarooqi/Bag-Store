@@ -21,7 +21,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>
+        <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>
           Dashboard
         </h1>
         <p className="text-sm" style={{ color: '#7a6a54' }}>Welcome back, Admin</p>
@@ -37,7 +37,7 @@ export default function AdminDashboardPage() {
                   <p className="text-xs uppercase tracking-widest" style={{ color: '#7a6a54' }}>{card.label}</p>
                   <span style={{ color: card.color }}>{card.icon}</span>
                 </div>
-                <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: card.color }} className="font-bold">
+                <p style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', color: card.color }} className="font-bold">
                   {card.value}
                 </p>
               </div>
@@ -48,7 +48,7 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         {/* Sales Bar Chart */}
         <div className="lg:col-span-2 p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce', fontSize: '1.25rem' }} className="mb-6">
+          <h3 style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce', fontSize: '1.25rem' }} className="mb-6">
             Sales — Last 7 Days
           </h3>
           {analytics?.orders?.length ? (
@@ -70,7 +70,7 @@ export default function AdminDashboardPage() {
 
         {/* Order Status Donut */}
         <div className="p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
-          <h3 style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce', fontSize: '1.25rem' }} className="mb-6">
+          <h3 style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce', fontSize: '1.25rem' }} className="mb-6">
             Orders by Status
           </h3>
           {analytics?.statusBreakdown?.length ? (
@@ -95,7 +95,7 @@ export default function AdminDashboardPage() {
         {/* Recent Orders */}
         <div className="p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce', fontSize: '1.25rem' }}>Recent Orders</h3>
+            <h3 style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce', fontSize: '1.25rem' }}>Recent Orders</h3>
             <Link href="/admin/orders" className="text-xs" style={{ color: '#c8a96e' }}>View all →</Link>
           </div>
           <div className="space-y-3">
@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
         {/* Low Stock */}
         <div className="p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce', fontSize: '1.25rem' }}>Low Stock Products</h3>
+            <h3 style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce', fontSize: '1.25rem' }}>Low Stock Products</h3>
             <Link href="/admin/products" className="text-xs" style={{ color: '#c8a96e' }}>Manage →</Link>
           </div>
           <div className="space-y-3">

@@ -62,16 +62,17 @@ const REVIEWS = [
 ];
 
 export function Testimonials() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(REVIEWS.length);
   const [visibleCards, setVisibleCards] = useState(2);
   const [isPaused, setIsPaused] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setVisibleCards(1);
       } else if (window.innerWidth < 1024) {
-        setVisibleCards(1.5); // Peek at next slide on tablets
+        setVisibleCards(1.5);
       } else {
         setVisibleCards(2);
       }
@@ -81,7 +82,6 @@ export function Testimonials() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Autoplay functionality
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -91,23 +91,26 @@ export function Testimonials() {
   }, [isPaused, visibleCards]);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => {
-      if (prev === 0) {
-        return REVIEWS.length - Math.ceil(visibleCards);
-      }
-      return prev - 1;
-    });
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => {
-      const maxIndex = REVIEWS.length - Math.ceil(visibleCards);
-      if (prev >= maxIndex) {
-        return 0;
-      }
-      return prev + 1;
-    });
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + 1);
   };
+
+  const handleTransitionEnd = () => {
+    if (currentIndex >= REVIEWS.length * 2) {
+      setIsTransitioning(false);
+      setCurrentIndex(currentIndex - REVIEWS.length);
+    } else if (currentIndex <= 0) {
+      setIsTransitioning(false);
+      setCurrentIndex(currentIndex + REVIEWS.length);
+    }
+  };
+
+  const DISPLAY_REVIEWS = [...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS];
 
   return (
     <section className="py-28 px-4 relative overflow-hidden" style={{ background: '#0a0908' }}>
@@ -194,10 +197,14 @@ export function Testimonials() {
           >
             <div className="w-full overflow-hidden">
               <div 
-                className="flex transition-transform duration-700 ease-out"
-                style={{ transform: `translateX(-${currentIndex * (100 / visibleCards)}%)` }}
+                className="flex"
+                style={{ 
+                  transform: `translateX(-${currentIndex * (100 / visibleCards)}%)`,
+                  transition: isTransitioning ? 'transform 700ms ease-out' : 'none'
+                }}
+                onTransitionEnd={handleTransitionEnd}
               >
-                {REVIEWS.map((r, idx) => (
+                {DISPLAY_REVIEWS.map((r, idx) => (
                   <div 
                     key={idx} 
                     className="flex-shrink-0 px-3 h-full"

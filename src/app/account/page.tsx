@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuthStore } from '@/store/authStore';
 import { useOrders } from '@/hooks/useOrders';
@@ -14,8 +14,11 @@ import {
   FiMapPin,
   FiLogOut,
   FiChevronRight,
+  FiEdit2,
+  FiX
 } from "react-icons/fi";
 import toast from "react-hot-toast";
+import api from "@/lib/api";
 
 const ORDER_STATUS_COLORS: Record<string, string> = {
   placed: "status-placed",
@@ -29,23 +32,63 @@ const ORDER_STATUS_COLORS: Record<string, string> = {
 
 type Tab = "profile" | "orders" | "wishlist" | "addresses";
 
-export default function AccountPage() {
+function AccountContent() {
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuthStore();
-  const [tab, setTab] = useState<Tab>('profile');
+  const searchParams = useSearchParams();
+  const { user, isAuthenticated, logout, setUser } = useAuthStore();
+  const [tab, setTab] = useState<Tab>((searchParams.get('tab') as Tab) || 'profile');
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [editForm, setEditForm] = useState({ name: '', phone: '' });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
   const { data: ordersData, isLoading: ordersLoading } = useOrders();
   const { data: wishlistData, isLoading: wishlistLoading } = useWishlist();
 
-  useEffect(() => {
-    if (!isAuthenticated) router.push("/auth/login?redirect=/account");
-  }, [isAuthenticated]);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isAuthenticated || !user) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    if (!isAuthenticated) router.push("/auth/login?redirect=/account");
+  }, [isAuthenticated, mounted]);
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t && ['profile', 'orders', 'wishlist', 'addresses'].includes(t)) {
+      setTab(t as Tab);
+    }
+  }, [searchParams]);
+
+  if (!mounted || !isAuthenticated || !user) return null;
 
   const handleLogout = async () => {
     await logout();
     toast.success("Logged out");
     router.push("/");
+  };
+
+  const handleEditClick = () => {
+    setEditForm({ name: user?.name || '', phone: user?.phone || '' });
+    setIsEditingProfile(true);
+  };
+
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSavingProfile(true);
+    try {
+      const { data } = await api.post('/auth/update-profile', editForm);
+      if (data.success) {
+        setUser({ ...user!, ...data.data.user });
+        toast.success(data.message);
+        setIsEditingProfile(false);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setIsSavingProfile(false);
+    }
   };
 
   const tabs = [
@@ -135,17 +178,58 @@ export default function AccountPage() {
                   border: "1px solid rgba(200,169,110,0.15)",
                 }}
               >
-                <h2
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: "1.5rem",
-                    color: "#f0e4ce",
-                  }}
-                  className="mb-6"
-                >
-                  Profile Details
-                </h2>
-                <div className="space-y-4 max-w-md">
+                <div className="flex justify-between items-center mb-6">
+                  <h2
+                    style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: "1.5rem",
+                      color: "#f0e4ce",
+                    }}
+                  >
+                    Profile Details
+                  </h2>
+                  {!isEditingProfile && (
+                    <button
+                      onClick={handleEditClick}
+                      className="flex items-center gap-2 text-sm text-[#c8a96e] hover:text-[#e8c98a] transition-colors"
+                    >
+                      <FiEdit2 size={14} /> Edit
+                    </button>
+                  )}
+                </div>
+                
+                {isEditingProfile ? (
+                  <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md">
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-[#7a6a54] block mb-1">Name</label>
+                      <input
+                        type="text"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        required
+                        className="w-full bg-transparent border border-[rgba(200,169,110,0.3)] text-[#f0e4ce] px-4 py-2 focus:outline-none focus:border-[#c8a96e]"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs uppercase tracking-widest text-[#7a6a54] block mb-1">Phone</label>
+                      <input
+                        type="text"
+                        value={editForm.phone}
+                        onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                        className="w-full bg-transparent border border-[rgba(200,169,110,0.3)] text-[#f0e4ce] px-4 py-2 focus:outline-none focus:border-[#c8a96e]"
+                      />
+                    </div>
+                    <div className="flex items-center gap-4 mt-6">
+                      <button type="submit" disabled={isSavingProfile} className="btn-primary text-sm px-6 py-2">
+                        {isSavingProfile ? 'Saving...' : 'Save Changes'}
+                      </button>
+                      <button type="button" onClick={() => setIsEditingProfile(false)} className="text-sm text-[#7a6a54] hover:text-[#f0e4ce]">
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="space-y-4 max-w-md">
                   {[
                     { label: "Name", value: user.name },
                     { label: "Email", value: user.email },
@@ -169,6 +253,7 @@ export default function AccountPage() {
                     </div>
                   ))}
                 </div>
+                )}
                 {user.role === "admin" && (
                   <Link
                     href="/admin/dashboard"
@@ -185,7 +270,7 @@ export default function AccountPage() {
               <div>
                 <h2
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Space Mono', monospace",
                     fontSize: "1.5rem",
                     color: "#f0e4ce",
                   }}
@@ -201,7 +286,7 @@ export default function AccountPage() {
                   </div>
                 ) : ordersData?.data?.length ? (
                   <div className="space-y-3">
-                    {ordersData.data.map((order) => (
+                    {ordersData.data.map((order: any) => (
                       <Link
                         key={order._id}
                         href={`/account/orders/${order.orderId}`}
@@ -282,7 +367,7 @@ export default function AccountPage() {
             {/* WISHLIST TAB */}
             {tab === 'wishlist' && (
               <div>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-6">
+                <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-6">
                   My Wishlist
                 </h2>
                 {wishlistLoading ? (
@@ -291,7 +376,7 @@ export default function AccountPage() {
                   </div>
                 ) : wishlistData?.data?.length ? (
                   <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                    {wishlistData.data.map((product) => (
+                    {wishlistData.data.map((product: any) => (
                       <ProductCard key={product._id} product={product} />
                     ))}
                   </div>
@@ -310,7 +395,7 @@ export default function AccountPage() {
               <div>
                 <h2
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Space Mono', monospace",
                     fontSize: "1.5rem",
                     color: "#f0e4ce",
                   }}
@@ -320,7 +405,7 @@ export default function AccountPage() {
                 </h2>
                 {user.addresses?.length ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {user.addresses.map((addr) => (
+                    {user.addresses.map((addr: any) => (
                       <div
                         key={addr._id}
                         className="p-4"
@@ -353,5 +438,19 @@ export default function AccountPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+import { Suspense } from 'react';
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen pt-24 pb-16 flex items-center justify-center" style={{ background: "#0f0e0c" }}>
+        <div className="w-8 h-8 border-2 border-[#c8a96e] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <AccountContent />
+    </Suspense>
   );
 }

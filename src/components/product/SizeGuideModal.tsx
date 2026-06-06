@@ -29,7 +29,7 @@ export function SizeGuideModal({ isOpen, onClose, dimensions }: Props) {
           <FiX size={24} />
         </button>
 
-        <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }} className="mb-2 text-center">
+        <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }} className="mb-2 text-center">
           Size Guide
         </h2>
         <p className="text-center text-sm mb-8" style={{ color: '#7a6a54' }}>

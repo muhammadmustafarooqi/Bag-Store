@@ -91,7 +91,7 @@ export default function RegisterPage() {
           <Link href="/">
             <span
               style={{
-                fontFamily: "'Cormorant Garamond', serif",
+                fontFamily: "'Space Mono', monospace",
                 fontSize: "2rem",
                 color: "#c8a96e",
                 letterSpacing: "0.2em",
@@ -102,7 +102,7 @@ export default function RegisterPage() {
           </Link>
           <h1
             style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Space Mono', monospace",
               fontSize: "3rem",
               color: "#f0e4ce",
             }}

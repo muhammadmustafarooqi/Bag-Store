@@ -6,7 +6,7 @@ export function useDashboard() {
   return useQuery({
     queryKey: ['admin', 'dashboard'],
     queryFn: async () => {
-      const { data } = await api.get('/admin/dashboard');
+      const { data } = await api.get(`/admin/dashboard?t=${Date.now()}`);
       return data.data;
     },
     staleTime: 30 * 1000,

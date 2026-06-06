@@ -27,6 +27,7 @@ function ShopPageContent() {
     color: '',
     sort: searchParams.get('sort') || '-createdAt',
     search: searchParams.get('search') || '',
+    isNewArrival: searchParams.get('isNewArrival') === 'true',
     page: 1,
     limit: 12,
   });
@@ -38,10 +39,10 @@ function ShopPageContent() {
   };
 
   const clearFilters = () => {
-    setFilters({ category: '', minPrice: '', maxPrice: '', color: '', sort: '-createdAt', search: '', page: 1, limit: 12 });
+    setFilters({ category: '', minPrice: '', maxPrice: '', color: '', sort: '-createdAt', search: '', isNewArrival: false, page: 1, limit: 12 });
   };
 
-  const activeFilterCount = [filters.category, filters.color, filters.minPrice, filters.maxPrice]
+  const activeFilterCount = [filters.category, filters.color, filters.minPrice, filters.maxPrice, filters.isNewArrival ? 'new' : '']
     .filter(Boolean).length;
 
   return (
@@ -110,6 +111,13 @@ function ShopPageContent() {
                 {filters.color} <FiX size={12} />
               </button>
             )}
+            {filters.isNewArrival && (
+              <button onClick={() => updateFilter('isNewArrival', '')}
+                className="flex items-center gap-1 px-3 py-1 text-xs rounded-full"
+                style={{ background: 'rgba(200,169,110,0.15)', color: '#c8a96e', border: '1px solid rgba(200,169,110,0.3)' }}>
+                New Arrivals <FiX size={12} />
+              </button>
+            )}
             <button onClick={clearFilters} className="text-xs px-3 py-1" style={{ color: '#7a6a54' }}>
               Clear all
             </button>
@@ -159,7 +167,7 @@ function ShopPageContent() {
               </>
             ) : (
               <div className="text-center py-24">
-                <p style={{ color: '#7a6a54', fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem' }}>
+                <p style={{ color: '#7a6a54', fontFamily: "'Space Mono', monospace", fontSize: '1.5rem' }}>
                   No products found
                 </p>
                 <button onClick={clearFilters} className="btn-outline mt-4 text-sm">
@@ -178,7 +186,7 @@ function ShopPageContent() {
           <div className="absolute right-0 top-0 bottom-0 w-80 overflow-y-auto p-6"
             style={{ background: '#1a1815', borderLeft: '1px solid rgba(200,169,110,0.15)' }}>
             <div className="flex justify-between items-center mb-6">
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#f0e4ce' }}>Filters</h3>
+              <h3 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#f0e4ce' }}>Filters</h3>
               <button onClick={() => setSidebarOpen(false)}><FiX size={20} style={{ color: '#7a6a54' }} /></button>
             </div>
             <FilterPanel filters={filters} updateFilter={updateFilter} clearFilters={clearFilters} />

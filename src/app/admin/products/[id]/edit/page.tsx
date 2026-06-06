@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 import { useProduct } from '@/hooks/useProducts';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
@@ -10,6 +11,7 @@ import Link from 'next/link';
 
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const { data: productData, isLoading: fetchLoading } = useProduct(params.id);
   
@@ -81,6 +83,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
 
       await api.put(`/products/${params.id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
       toast.success('Product updated!');
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      await queryClient.invalidateQueries({ queryKey: ['product', params.id] });
       router.push('/admin/products');
       router.refresh();
     } catch (err: any) {
@@ -100,7 +104,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         <Link href="/admin/products" className="p-2 hover:bg-[rgba(200,169,110,0.1)] transition-colors" style={{ color: '#c8a96e' }}>
           <FiArrowLeft size={20} />
         </Link>
-        <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>Edit Product</h1>
+        <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>Edit Product</h1>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -180,9 +184,21 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                   <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>{f.label}</label>
                   <input type={f.key === 'price' || f.key === 'stock' ? 'number' : 'text'} 
                     value={(form as any)[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-                    className="input-field w-full" required={f.key.includes('*')} />
+                    className="input-field w-full" required={f.label.includes('*')} />
                 </div>
               ))}
+            </div>
+
+            <div className="p-6 space-y-4" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
+              <h3 className="text-xs uppercase tracking-widest" style={{ color: '#c8a96e' }}>Visibility</h3>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.isFeatured} onChange={(e) => setForm({...form, isFeatured: e.target.checked})} />
+                <span className="text-sm" style={{ color: '#f0e4ce' }}>Featured Product</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.isNew} onChange={(e) => setForm({...form, isNew: e.target.checked})} />
+                <span className="text-sm" style={{ color: '#f0e4ce' }}>New Arrival</span>
+              </label>
             </div>
 
             <button type="submit" disabled={loading} className="btn-primary w-full py-4 text-base disabled:opacity-60">

@@ -3,11 +3,14 @@ import Order from '@/lib/models/Order';
 import connectDB from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   await connectDB();
   const admin = await getAuthUser(req, true);
   if (!admin) {
-    return NextResponse.json({ success: false, message: 'Admin access required' }, { status: 403 });
+    return NextResponse.json({ success: false, message: 'Admin access required or session expired' }, { status: 401 });
   }
 
   try {

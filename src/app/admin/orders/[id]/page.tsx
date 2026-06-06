@@ -101,7 +101,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
       
       <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8">
         <div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>
+          <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>
             Order {data.orderId}
           </h1>
           <p className="text-sm mt-1" style={{ color: '#7a6a54' }}>
@@ -125,9 +125,33 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
           
           {/* Status & Summary */}
           <div className="p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2" style={{ color: '#f0e4ce' }}>
-              <StatusIcon /> Current Status: <span className="uppercase tracking-widest text-sm ml-2" style={{ color: '#c8a96e' }}>{data.orderStatus}</span>
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: '#f0e4ce' }}>
+                <StatusIcon /> Current Status: 
+                <select
+                  value={data.orderStatus}
+                  onChange={async (e) => {
+                    const newStatus = e.target.value;
+                    try {
+                      await api.put(`/orders/${data._id}/status`, { orderStatus: newStatus });
+                      toast.success('Order status updated');
+                      refetch();
+                    } catch (err) {
+                      toast.error('Failed to update status');
+                    }
+                  }}
+                  className="bg-transparent border border-[#c8a96e] text-[#c8a96e] rounded px-2 py-1 uppercase tracking-widest text-sm ml-2 outline-none"
+                >
+                  <option value="placed" className="bg-[#1a1815]">Placed</option>
+                  <option value="confirmed" className="bg-[#1a1815]">Confirmed</option>
+                  <option value="packed" className="bg-[#1a1815]">Packed</option>
+                  <option value="shipped" className="bg-[#1a1815]">Shipped</option>
+                  <option value="delivered" className="bg-[#1a1815]">Delivered</option>
+                  <option value="cancelled" className="bg-[#1a1815]">Cancelled</option>
+                  <option value="returned" className="bg-[#1a1815]">Returned</option>
+                </select>
+              </h2>
+            </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
               <div>
@@ -136,9 +160,25 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
               </div>
               <div>
                 <p className="text-xs uppercase tracking-widest mb-1" style={{ color: '#7a6a54' }}>Payment Status</p>
-                <p className={`font-semibold capitalize ${data.paymentStatus === 'paid' ? 'text-green-500' : 'text-yellow-500'}`}>
-                  {data.paymentStatus}
-                </p>
+                <select
+                  value={data.paymentStatus}
+                  onChange={async (e) => {
+                    const newStatus = e.target.value;
+                    try {
+                      await api.put(`/orders/${data._id}/status`, { paymentStatus: newStatus });
+                      toast.success('Payment status updated');
+                      refetch();
+                    } catch (err) {
+                      toast.error('Failed to update payment status');
+                    }
+                  }}
+                  className={`bg-transparent font-semibold capitalize outline-none cursor-pointer border-b border-dashed ${data.paymentStatus === 'paid' ? 'text-green-500 border-green-500/50' : 'text-yellow-500 border-yellow-500/50'}`}
+                >
+                  <option value="pending" className="bg-[#1a1815] text-yellow-500">Pending</option>
+                  <option value="paid" className="bg-[#1a1815] text-green-500">Paid</option>
+                  <option value="failed" className="bg-[#1a1815] text-red-500">Failed</option>
+                  <option value="refunded" className="bg-[#1a1815] text-gray-400">Refunded</option>
+                </select>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-widest mb-1" style={{ color: '#7a6a54' }}>Total</p>

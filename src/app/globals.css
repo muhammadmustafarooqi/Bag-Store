@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -31,13 +31,14 @@
   body {
     background-color: var(--bg-primary);
     color: var(--cream);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    color-scheme: dark;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-weight: 600;
     line-height: 1.2;
   }
@@ -66,7 +67,7 @@
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-semibold text-sm tracking-wider uppercase transition-all duration-300 rounded-none;
     background: var(--gold);
     color: var(--bg-primary);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
   }
   .btn-primary:hover {
     background: var(--gold-light);
@@ -79,7 +80,7 @@
     border: 1px solid var(--gold);
     color: var(--gold);
     background: transparent;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
   }
   .btn-outline:hover {
     background: var(--gold);
@@ -103,7 +104,7 @@
   }
 
   .section-title {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 600;
     color: var(--cream);
@@ -111,7 +112,7 @@
   }
 
   .section-subtitle {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
     font-size: 0.875rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -124,7 +125,7 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     color: var(--cream);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
   }
   .input-field:focus {
     border-color: var(--gold);
@@ -157,7 +158,7 @@
     @apply text-xs font-semibold px-2 py-1 tracking-wider uppercase;
     background: var(--gold);
     color: var(--bg-primary);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
   }
 
   .badge-sale {
@@ -169,7 +170,7 @@
   .nav-link {
     @apply relative text-sm font-medium tracking-wider uppercase transition-colors duration-200;
     color: var(--muted);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Lato', sans-serif;
     letter-spacing: 0.1em;
   }
   .nav-link:hover, .nav-link.active {

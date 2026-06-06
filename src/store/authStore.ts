@@ -11,6 +11,7 @@ interface AuthStore {
   login: (credentials: { email: string; password: string }) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (user: User) => void;
+  setTokens: (accessToken: string, refreshToken: string) => void;
   initialize: () => void;
 }
 
@@ -40,6 +41,8 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       setUser: (user) => set({ user }),
+
+      setTokens: (token, refreshToken) => set({ token, refreshToken }),
 
       initialize: () => {
         const token = localStorage.getItem('kaarvan_token');

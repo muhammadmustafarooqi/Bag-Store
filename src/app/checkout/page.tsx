@@ -142,7 +142,7 @@ export default function CheckoutPage() {
 
               {/* Shipping Address */}
               <div>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
+                <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
                   Shipping Information
                 </h2>
                 <div className="space-y-4">
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
 
               {/* Payment Method */}
               <div>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
+                <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
                   Payment Method
                 </h2>
                 <div className="space-y-3">
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
             {/* Right: Order Summary */}
             <div className="lg:col-span-2">
               <div className="sticky top-28 p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-6">
+                <h3 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-6">
                   Order Summary
                 </h3>
 
@@ -312,7 +312,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between font-semibold text-base py-4"
                   style={{ borderTop: '1px solid rgba(200,169,110,0.15)' }}>
                   <span style={{ color: '#f0e4ce' }}>Total</span>
-                  <span style={{ color: '#c8a96e', fontFamily: "'Cormorant Garamond', serif", fontSize: '1.25rem' }}>
+                  <span style={{ color: '#c8a96e', fontFamily: "'Space Mono', monospace", fontSize: '1.25rem' }}>
                     {formatCurrency(total())}
                   </span>
                 </div>

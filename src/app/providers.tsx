@@ -28,7 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               background: '#221f1b',
               color: '#f0e4ce',
               border: '1px solid rgba(200, 169, 110, 0.2)',
-              fontFamily: "'Outfit', sans-serif",
+              fontFamily: "'Roboto Mono', monospace",
               fontSize: '14px',
             },
             success: {

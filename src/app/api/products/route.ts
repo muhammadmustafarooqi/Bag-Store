@@ -60,10 +60,38 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const [products, total] = await Promise.all([
-      Product.find(query).sort(sortObj).skip(skip).limit(limit),
-      Product.countDocuments(query),
-    ]);
+    const isPriceSort = sort === 'price_asc' || sort === 'price_desc';
+    let products, total;
+
+    if (isPriceSort) {
+      const sortOrder = sort === 'price_asc' ? 1 : -1;
+      const pipeline: any[] = [
+        { $match: query },
+        {
+          $addFields: {
+            effectivePrice: {
+              $cond: { if: "$onSale", then: "$salePrice", else: "$price" }
+            }
+          }
+        },
+        { $sort: { effectivePrice: sortOrder, _id: 1 } },
+        {
+          $facet: {
+            metadata: [{ $count: "total" }],
+            data: [{ $skip: skip }, { $limit: limit }]
+          }
+        }
+      ];
+      
+      const result = await Product.aggregate(pipeline);
+      products = result[0].data;
+      total = result[0].metadata[0]?.total || 0;
+    } else {
+      [products, total] = await Promise.all([
+        Product.find(query).sort(sortObj).skip(skip).limit(limit),
+        Product.countDocuments(query),
+      ]);
+    }
 
     return NextResponse.json({
       success: true,

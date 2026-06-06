@@ -35,7 +35,7 @@ export default function CartPage() {
       <div className="min-h-screen pt-24 flex items-center justify-center" style={{ background: '#0f0e0c' }}>
         <div className="text-center animate-fadeIn">
           <FiShoppingBag size={64} className="mx-auto mb-6" style={{ color: '#3a3228' }} />
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }} className="mb-3">
+          <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }} className="mb-3">
             Your Cart is Empty
           </h2>
           <p className="mb-8" style={{ color: '#7a6a54' }}>Looks like you haven't added any items yet.</p>
@@ -73,7 +73,7 @@ export default function CartPage() {
                 <div className="flex-1 min-w-0">
                   <Link href={`/shop/${item.product.slug}`}
                     className="font-semibold text-sm hover:text-[#c8a96e] transition-colors line-clamp-1"
-                    style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce', fontSize: '1.1rem' }}>
+                    style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce', fontSize: '1.1rem' }}>
                     {item.product.name}
                   </Link>
                   {item.color && (
@@ -84,16 +84,16 @@ export default function CartPage() {
                   </p>
                 </div>
                 <div className="flex flex-col items-end justify-between">
-                  <button onClick={() => removeItem(item.product._id)} className="p-1 hover:text-red-400 transition-colors" style={{ color: '#7a6a54' }}>
+                  <button onClick={() => removeItem(item.product._id, item.color)} className="p-1 hover:text-red-400 transition-colors" style={{ color: '#7a6a54' }}>
                     <FiTrash2 size={16} />
                   </button>
                   <div className="flex items-center" style={{ border: '1px solid rgba(200,169,110,0.2)' }}>
-                    <button onClick={() => updateQty(item.product._id, Math.max(1, item.qty - 1))}
+                    <button onClick={() => updateQty(item.product._id, item.color, Math.max(1, item.qty - 1))}
                       className="w-8 h-8 flex items-center justify-center hover:text-[#c8a96e] transition-colors" style={{ color: '#7a6a54' }}>
                       <FiMinus size={12} />
                     </button>
                     <span className="w-8 text-center text-sm" style={{ color: '#f0e4ce' }}>{item.qty}</span>
-                    <button onClick={() => updateQty(item.product._id, item.qty + 1)}
+                    <button onClick={() => updateQty(item.product._id, item.color, item.qty + 1)}
                       className="w-8 h-8 flex items-center justify-center hover:text-[#c8a96e] transition-colors" style={{ color: '#7a6a54' }}>
                       <FiPlus size={12} />
                     </button>
@@ -109,7 +109,7 @@ export default function CartPage() {
           {/* Order Summary */}
           <div>
             <div className="p-6 sticky top-28" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-6">
+              <h3 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-6">
                 Order Summary
               </h3>
 
@@ -165,7 +165,7 @@ export default function CartPage() {
               <div className="flex justify-between text-base font-semibold py-4"
                 style={{ borderTop: '1px solid rgba(200,169,110,0.15)' }}>
                 <span style={{ color: '#f0e4ce' }}>Total</span>
-                <span style={{ color: '#c8a96e', fontFamily: "'Cormorant Garamond', serif", fontSize: '1.25rem' }}>
+                <span style={{ color: '#c8a96e', fontFamily: "'Space Mono', monospace", fontSize: '1.25rem' }}>
                   {formatCurrency(grandTotal)}
                 </span>
               </div>

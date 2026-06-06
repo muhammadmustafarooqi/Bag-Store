@@ -11,9 +11,9 @@ import { formatCurrency } from '@/lib/constants';
 
 const NAV_LINKS = [
   { href: '/shop', label: 'Shop' },
-  { href: '/shop?category=handbag', label: 'Handbags' },
-  { href: '/shop?category=backpack', label: 'Backpacks' },
-  { href: '/shop?category=laptop+bag', label: 'Laptop Bags' },
+  { href: '/shop?category=Handbag', label: 'Handbags' },
+  { href: '/shop?category=Backpack', label: 'Backpacks' },
+  { href: '/shop?category=Laptop%20Bag', label: 'Laptop Bags' },
   { href: '/track-order', label: 'Track Order' },
 ];
 
@@ -77,7 +77,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <span
-              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              style={{ fontFamily: "'Space Mono', monospace" }}
               className="text-3xl font-bold tracking-widest text-[#c8a96e] group-hover:text-[#e8c98a] transition-colors duration-300"
             >
               KAARVAN
@@ -85,7 +85,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-8">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -98,7 +98,7 @@ export function Navbar() {
           </nav>
 
           {/* Icons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 sm:gap-4">
             {/* Search */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
@@ -142,7 +142,7 @@ export function Navbar() {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-[#7a6a54] hover:text-[#f0e4ce] transition-colors"
+              className="lg:hidden p-2 text-[#7a6a54] hover:text-[#f0e4ce] transition-colors"
               aria-label="Menu"
             >
               {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
@@ -162,7 +162,7 @@ export function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search collections, bags, wallets..."
                   className="w-full bg-transparent border-none outline-none text-2xl sm:text-4xl text-[#f0e4ce] placeholder-[#7a6a54] font-light"
-                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                  style={{ fontFamily: "'Space Mono', monospace" }}
                   autoFocus
                 />
               </form>
@@ -226,14 +226,14 @@ export function Navbar() {
         {/* Mobile Menu Overlay */}
         {menuOpen && (
           <div 
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-40 bg-black/80 backdrop-blur-md lg:hidden"
             onClick={() => setMenuOpen(false)}
           />
         )}
 
         {/* Mobile Side Drawer */}
         <div 
-          className={`fixed top-0 right-0 bottom-0 z-50 w-80 max-w-[80%] bg-[#0a0908] border-l border-[rgba(200,169,110,0.1)] transition-transform duration-300 ease-in-out md:hidden ${
+          className={`fixed top-0 right-0 bottom-0 z-50 w-80 max-w-[80%] bg-[#0f0e0c] shadow-2xl border-l border-[rgba(200,169,110,0.2)] transition-transform duration-300 ease-in-out lg:hidden ${
             menuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
@@ -252,7 +252,7 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   className="text-2xl font-serif text-[#f0e4ce] hover:text-[#c8a96e] transition-colors"
-                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                  style={{ fontFamily: "'Space Mono', monospace" }}
                 >
                   {link.label}
                 </Link>

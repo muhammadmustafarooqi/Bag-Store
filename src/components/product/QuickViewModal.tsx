@@ -94,12 +94,12 @@ export function QuickViewModal({ isOpen, onClose, product }: Props) {
         {/* Right: Product Details */}
         <div className="w-full md:w-1/2 p-8 flex flex-col max-h-[80vh] overflow-y-auto">
           <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>{product.category}</p>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: '#f0e4ce' }} className="mb-2 leading-tight">
+          <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', color: '#f0e4ce' }} className="mb-2 leading-tight">
             {product.name}
           </h2>
           
           <div className="flex items-center gap-3 mb-6">
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#c8a96e' }} className="font-semibold">
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#c8a96e' }} className="font-semibold">
               {formatCurrency(displayPrice)}
             </span>
             {product.onSale && product.salePrice && (

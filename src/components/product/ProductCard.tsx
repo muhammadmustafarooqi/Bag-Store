@@ -140,13 +140,13 @@ export function ProductCard({ product }: Props) {
         </div>
 
         {/* Info */}
-        <div className="p-4">
-          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: '#7a6a54' }}>
+        <div className="p-3 sm:p-4">
+          <p className="text-[10px] sm:text-xs uppercase tracking-widest mb-1" style={{ color: '#7a6a54' }}>
             {product.category}
           </p>
           <h3
-            className="font-semibold text-base mb-1 line-clamp-1 group-hover:text-[#c8a96e] transition-colors"
-            style={{ fontFamily: "'Cormorant Garamond', serif", color: '#f0e4ce' }}
+            className="font-semibold text-sm sm:text-base mb-1 line-clamp-1 group-hover:text-[#c8a96e] transition-colors"
+            style={{ fontFamily: "'Space Mono', monospace", color: '#f0e4ce' }}
           >
             {product.name}
           </h3>
@@ -162,12 +162,12 @@ export function ProductCard({ product }: Props) {
           )}
 
           {/* Price */}
-          <div className="flex items-center gap-2">
-            <span className="font-semibold" style={{ color: '#c8a96e', fontFamily: "'Outfit', sans-serif" }}>
+          <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
+            <span className="font-semibold text-sm sm:text-base" style={{ color: '#c8a96e', fontFamily: "'Roboto Mono', monospace" }}>
               {formatCurrency(displayPrice)}
             </span>
             {product.onSale && product.salePrice && (
-              <span className="text-sm line-through" style={{ color: '#7a6a54' }}>
+              <span className="text-xs sm:text-sm line-through" style={{ color: '#7a6a54' }}>
                 {formatCurrency(product.price)}
               </span>
             )}

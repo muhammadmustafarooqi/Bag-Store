@@ -231,6 +231,31 @@ export async function POST(req: NextRequest, { params }: { params: { action: str
         });
       }
 
+      case 'update-profile': {
+        const authUser = await getAuthUser(req);
+        if (!authUser) {
+          return NextResponse.json({ success: false, message: 'Not authorized' }, { status: 401 });
+        }
+        
+        const userToUpdate = await User.findById(authUser._id);
+        if (!userToUpdate) {
+          return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+        }
+        
+        if (body.name) userToUpdate.name = body.name;
+        if (body.phone !== undefined) userToUpdate.phone = body.phone;
+
+        await userToUpdate.save({ validateBeforeSave: false });
+        
+        return NextResponse.json({
+          success: true,
+          message: 'Profile updated successfully',
+          data: {
+            user: { _id: userToUpdate._id, name: userToUpdate.name, email: userToUpdate.email, role: userToUpdate.role, phone: userToUpdate.phone }
+          }
+        });
+      }
+
       default:
         return NextResponse.json({ success: false, message: 'Action not found' }, { status: 404 });
     }

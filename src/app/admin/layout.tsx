@@ -11,15 +11,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, isAuthenticated, logout } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
     if (!isAuthenticated) {
       router.push('/auth/login');
     } else if (user?.role !== 'admin') {
       router.push('/');
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, mounted]);
 
-  if (!isAuthenticated || user?.role !== 'admin') return null;
+  if (!mounted || !isAuthenticated || user?.role !== 'admin') return null;
 
   const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: <FiGrid size={18} /> },
@@ -49,7 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-6 mb-4 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(200,169,110,0.1)' }}>
           <div>
             <Link href="/">
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#c8a96e', letterSpacing: '0.15em' }}>
+              <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#c8a96e', letterSpacing: '0.15em' }}>
                 KAARVAN
               </span>
             </Link>
@@ -99,7 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-[#c8a96e]">
             <FiMenu size={24} />
           </button>
-          <span className="text-sm font-serif text-[#c8a96e]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <span className="text-sm font-serif text-[#c8a96e]" style={{ fontFamily: "'Space Mono', monospace" }}>
             KAARVAN ADMIN
           </span>
           <div className="w-10" /> {/* Spacer */}

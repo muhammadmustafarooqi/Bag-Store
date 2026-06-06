@@ -30,11 +30,11 @@ export default function ForgotPasswordPage() {
         
         <div className="text-center mb-10">
           <Link href="/">
-            <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2rem', color: '#c8a96e', letterSpacing: '0.2em' }}>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', color: '#c8a96e', letterSpacing: '0.2em' }}>
               KAARVAN
             </span>
           </Link>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '3rem', color: '#f0e4ce' }} className="mt-4 mb-2 font-light">
+          <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '3rem', color: '#f0e4ce' }} className="mt-4 mb-2 font-light">
             Reset Password
           </h1>
           <p className="text-xs uppercase tracking-widest" style={{ color: '#7a6a54' }}>Enter your email to receive a reset link</p>

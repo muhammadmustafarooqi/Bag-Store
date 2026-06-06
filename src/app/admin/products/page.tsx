@@ -38,7 +38,7 @@ export default function AdminProductsPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '2.5rem', color: '#f0e4ce' }}>Products</h1>
+          <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>Products</h1>
           <p className="text-sm" style={{ color: '#7a6a54' }}>{data?.pagination?.total || 0} total products</p>
         </div>
         <Link href="/admin/products/new" className="btn-primary flex items-center gap-2">
@@ -143,7 +143,7 @@ export default function AdminProductsPage() {
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
           <div className="p-8 max-w-sm w-full mx-4" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.2)' }}>
-            <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-3">
+            <h3 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.5rem', color: '#f0e4ce' }} className="mb-3">
               Delete Product?
             </h3>
             <p className="text-sm mb-6" style={{ color: '#7a6a54' }}>
