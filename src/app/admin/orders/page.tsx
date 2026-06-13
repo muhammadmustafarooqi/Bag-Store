@@ -28,7 +28,7 @@ export default function AdminOrdersPage() {
 
   const updateStatus = async (id: string, orderStatus: string) => {
     try {
-      await api.put(`/orders/${id}/status`, { orderStatus });
+      await api.patch(`/orders/${id}`, { orderStatus });
       toast.success(`Status updated to "${orderStatus}"`);
       refetch();
     } catch {

@@ -134,6 +134,70 @@ export default function TrackOrderPage() {
               </p>
             </div>
 
+            {/* Progress Stepper */}
+            <div className="p-8" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
+              <h3 className="font-semibold mb-8 text-center text-sm uppercase tracking-widest" style={{ color: '#f0e4ce', fontFamily: "'Space Mono', monospace" }}>
+                Delivery Progress
+              </h3>
+              
+              <div className="relative flex items-center justify-between max-w-xl mx-auto px-4">
+                {/* Horizontal line background */}
+                <div className="absolute left-6 right-6 top-5 -translate-y-1/2 h-[2px]" style={{ background: '#25211c' }} />
+                
+                {/* Active line progress */}
+                <div 
+                  className="absolute left-6 top-5 -translate-y-1/2 h-[2px] transition-all duration-700 ease-in-out" 
+                  style={{ 
+                    background: '#c8a96e',
+                    width: (orderData.orderStatus === 'cancelled' || orderData.orderStatus === 'returned')
+                      ? '0%'
+                      : (() => {
+                          const idx = { placed: 0, confirmed: 1, packed: 1, shipped: 2, delivered: 3 }[orderData.orderStatus as string] ?? 0;
+                          return `${(idx / 3) * 88}%`; // Adjust slightly to match circles alignment
+                        })()
+                  }}
+                />
+
+                {[
+                  { key: 'placed', label: 'Placed', icon: FiClock },
+                  { key: 'confirmed', label: 'Confirmed', icon: FiPackage },
+                  { key: 'shipped', label: 'Shipped', icon: FiTruck },
+                  { key: 'delivered', label: 'Delivered', icon: FiCheckCircle }
+                ].map((step, idx) => {
+                  const statusIdx = { placed: 0, confirmed: 1, packed: 1, shipped: 2, delivered: 3, cancelled: -1, returned: -1 }[orderData.orderStatus as string] ?? 0;
+                  const isCompleted = idx < statusIdx && statusIdx >= 0;
+                  const isActive = idx === statusIdx && statusIdx >= 0;
+                  const IconComponent = step.icon;
+
+                  return (
+                    <div key={step.key} className="relative z-10 flex flex-col items-center">
+                      <div 
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                          isCompleted
+                            ? 'bg-[#c8a96e] text-[#0f0e0c]'
+                            : isActive
+                            ? 'bg-[#1a1815] text-[#c8a96e] border border-[#c8a96e] shadow-[0_0_12px_rgba(200,169,110,0.3)] animate-pulse'
+                            : 'bg-[#0f0e0c] text-[#7a6a54] border border-[#25211c]'
+                        }`}
+                      >
+                        <IconComponent size={18} />
+                      </div>
+                      <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider mt-3 whitespace-nowrap"
+                         style={{ color: (isCompleted || isActive) ? '#c8a96e' : '#7a6a54' }}>
+                        {step.label}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {(orderData.orderStatus === 'cancelled' || orderData.orderStatus === 'returned') && (
+                <div className="mt-8 p-3 text-sm text-center border border-red-900/30 bg-red-950/10 text-red-400">
+                  ⚠️ This order has been {orderData.orderStatus === 'cancelled' ? 'cancelled' : 'returned'}.
+                </div>
+              )}
+            </div>
+
             {/* Courier Tracking Card */}
             {orderData.trackingNumber && orderData.courierName && (
               <div className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4" 

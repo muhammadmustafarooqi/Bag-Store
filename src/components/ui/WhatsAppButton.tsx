@@ -1,5 +1,6 @@
 'use client';
 import { FaWhatsapp } from 'react-icons/fa';
+import { fbEvent } from '@/lib/pixel';
 
 const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
 
@@ -10,6 +11,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat on WhatsApp"
+      onClick={() => fbEvent('Contact')}
       className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full shadow-2xl transition-all duration-300 hover:scale-110"
       style={{ background: '#25d366', color: '#fff' }}
     >

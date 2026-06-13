@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
 
     const sanitizedOrder = {
       orderId: order.orderId,
+      status: order.orderStatus,
       orderStatus: order.orderStatus,
       paymentStatus: order.paymentStatus,
       trackingNumber: order.trackingNumber || '',

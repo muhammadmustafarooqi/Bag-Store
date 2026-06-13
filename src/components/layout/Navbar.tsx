@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/authStore';
 import api from '@/lib/api';
 import Image from 'next/image';
 import { formatCurrency } from '@/lib/constants';
+import { fbEvent } from '@/lib/pixel';
 
 const NAV_LINKS = [
   { href: '/shop', label: 'Shop' },
@@ -59,6 +60,7 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      fbEvent('Search', { search_string: searchQuery });
       setSearchOpen(false);
       router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
     }

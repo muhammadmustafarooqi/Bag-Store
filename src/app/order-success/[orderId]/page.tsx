@@ -7,6 +7,7 @@ import { FiCheckCircle, FiPackage, FiPhone } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
+import { fbEvent } from '@/lib/pixel';
 
 const WA = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
 
@@ -15,6 +16,7 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
   const order = data?.data;
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
+  const [purchaseFired, setPurchaseFired] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
@@ -27,6 +29,15 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
     const timer = setTimeout(() => setShowConfetti(false), 5000);
     return () => clearTimeout(timer);
   }, [isLoading]);
+
+  useEffect(() => {
+    if (isLoading || !order || purchaseFired) return;
+    fbEvent('Purchase', {
+      value: order.total,
+      currency: 'PKR',
+    });
+    setPurchaseFired(true);
+  }, [isLoading, order, purchaseFired]);
 
   if (isLoading) {
     return (

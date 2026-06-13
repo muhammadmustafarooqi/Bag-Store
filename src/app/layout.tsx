@@ -3,6 +3,9 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { ConditionalLayout } from "@/components/layout/ConditionalLayout";
 import CustomCursor from "@/components/ui/CustomCursor";
+import { Suspense } from "react";
+import { MetaPixel } from "@/components/MetaPixel";
+import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 
 export const metadata: Metadata = {
   title: {
@@ -35,6 +38,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
+          <Suspense fallback={null}>
+            <MetaPixel />
+            <AnalyticsTracker />
+          </Suspense>
           <CustomCursor />
           <ConditionalLayout>
             {children}

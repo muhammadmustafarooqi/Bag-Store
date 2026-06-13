@@ -10,6 +10,7 @@ import { formatCurrency } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import { CursorHover } from '@/components/ui/CursorHover';
 import { QuickViewModal } from './QuickViewModal';
+import { fbEvent } from '@/lib/pixel';
 
 interface Props {
   product: Product;
@@ -26,6 +27,13 @@ export function ProductCard({ product }: Props) {
     e.preventDefault();
     e.stopPropagation();
     addItem(product, 1, product.colors[0] || '');
+    fbEvent('AddToCart', {
+      content_ids: [product._id],
+      content_name: product.name,
+      content_type: 'product',
+      value: displayPrice,
+      currency: 'PKR',
+    });
     toast.success(`${product.name} added to cart`);
   };
 
@@ -33,6 +41,15 @@ export function ProductCard({ product }: Props) {
     e.preventDefault();
     e.stopPropagation();
     await toggle(product._id);
+    if (!wishlisted) {
+      fbEvent('AddToWishlist', {
+        content_ids: [product._id],
+        content_name: product.name,
+        content_type: 'product',
+        value: displayPrice,
+        currency: 'PKR',
+      });
+    }
     toast.success(wishlisted ? 'Removed from wishlist' : 'Added to wishlist');
   };
 

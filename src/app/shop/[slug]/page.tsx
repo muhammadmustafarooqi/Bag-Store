@@ -13,6 +13,7 @@ import { FiHeart, FiShoppingBag, FiStar, FiTruck, FiRefreshCw, FiShield, FiMaxim
 import { formatCurrency } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
+import { fbEvent } from '@/lib/pixel';
 
 export default function ProductDetailPage({ params }: { params: { slug: string } }) {
   const { data, isLoading } = useProduct(params.slug);
@@ -40,6 +41,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
 
   const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
@@ -72,14 +74,40 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   const displayPrice = product.onSale && product.salePrice ? product.salePrice : product.price;
   const wishlisted = isWishlisted(product._id);
 
+  useEffect(() => {
+    if (product) {
+      fbEvent('ViewContent', {
+        content_ids: [product._id],
+        content_name: product.name,
+        content_type: 'product',
+        value: displayPrice,
+        currency: 'PKR',
+      });
+    }
+  }, [product, displayPrice]);
+
   const handleAddToCart = () => {
     addItem(product, qty, selectedColor || product.colors[0] || '');
+    fbEvent('AddToCart', {
+      content_ids: [product._id],
+      content_name: product.name,
+      content_type: 'product',
+      value: displayPrice * qty,
+      currency: 'PKR',
+    });
     toast.success('Added to cart!');
   };
 
   const handleBuyNow = () => {
     clearCart();
     addItem(product, qty, selectedColor || product.colors[0] || '');
+    fbEvent('AddToCart', {
+      content_ids: [product._id],
+      content_name: product.name,
+      content_type: 'product',
+      value: displayPrice * qty,
+      currency: 'PKR',
+    });
     router.push('/checkout');
   };
 
@@ -275,7 +303,18 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
                 </button>
               </div>
               <button
-                onClick={() => toggle(product._id)}
+                onClick={() => {
+                  toggle(product._id);
+                  if (!wishlisted) {
+                    fbEvent('AddToWishlist', {
+                      content_ids: [product._id],
+                      content_name: product.name,
+                      content_type: 'product',
+                      value: displayPrice,
+                      currency: 'PKR',
+                    });
+                  }
+                }}
                 className="p-4 transition-all duration-200"
                 style={{
                   border: `1px solid ${wishlisted ? '#c8a96e' : 'rgba(200,169,110,0.2)'}`,

@@ -45,7 +45,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
     }
     setIsSaving(true);
     try {
-      await api.put(`/orders/${data._id}/tracking`, {
+      await api.patch(`/orders/${data._id}`, {
         courierName,
         trackingNumber,
       });
@@ -133,7 +133,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                   onChange={async (e) => {
                     const newStatus = e.target.value;
                     try {
-                      await api.put(`/orders/${data._id}/status`, { orderStatus: newStatus });
+                      await api.patch(`/orders/${data._id}`, { orderStatus: newStatus });
                       toast.success('Order status updated');
                       refetch();
                     } catch (err) {
@@ -165,7 +165,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                   onChange={async (e) => {
                     const newStatus = e.target.value;
                     try {
-                      await api.put(`/orders/${data._id}/status`, { paymentStatus: newStatus });
+                      await api.patch(`/orders/${data._id}`, { paymentStatus: newStatus });
                       toast.success('Payment status updated');
                       refetch();
                     } catch (err) {
