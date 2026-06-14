@@ -57,7 +57,7 @@ const productSchema = new mongoose.Schema(
   { timestamps: true, suppressReservedKeysWarning: true }
 );
 
-productSchema.pre('save', function (next) {
+productSchema.pre('save', async function () {
   if (this.isModified('name') && !this.slug) {
     this.slug = slugify(this.name, { lower: true, strict: true });
   }
@@ -67,7 +67,6 @@ productSchema.pre('save', function (next) {
     this.ratings.average = +(total / this.reviews.length).toFixed(1);
     this.ratings.count = this.reviews.length;
   }
-  next();
 });
 
 productSchema.index({ name: 'text', description: 'text', tags: 'text' });
