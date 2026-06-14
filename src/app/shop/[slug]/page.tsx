@@ -55,6 +55,20 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
   });
   const related = relatedData?.data?.filter((p) => p._id !== product?._id).slice(0, 4) || [];
 
+  const displayPrice = product?.onSale && product?.salePrice ? product.salePrice : (product?.price || 0);
+
+  useEffect(() => {
+    if (product) {
+      fbEvent('ViewContent', {
+        content_ids: [product._id],
+        content_name: product.name,
+        content_type: 'product',
+        value: displayPrice,
+        currency: 'PKR',
+      });
+    }
+  }, [product, displayPrice]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen pt-24 flex items-center justify-center" style={{ background: '#0f0e0c' }}>
@@ -71,20 +85,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     );
   }
 
-  const displayPrice = product.onSale && product.salePrice ? product.salePrice : product.price;
   const wishlisted = isWishlisted(product._id);
-
-  useEffect(() => {
-    if (product) {
-      fbEvent('ViewContent', {
-        content_ids: [product._id],
-        content_name: product.name,
-        content_type: 'product',
-        value: displayPrice,
-        currency: 'PKR',
-      });
-    }
-  }, [product, displayPrice]);
 
   const handleAddToCart = () => {
     addItem(product, qty, selectedColor || product.colors[0] || '');
