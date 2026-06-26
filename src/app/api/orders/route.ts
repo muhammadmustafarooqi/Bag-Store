@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import Order from '@/lib/models/Order';
 import Product from '@/lib/models/Product';
 import Coupon from '@/lib/models/Coupon';
+import Bundle from '@/lib/models/Bundle';
+import Settings from '@/lib/models/Settings';
 import connectDB from '@/lib/db';
 import { getAuthUser } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   await connectDB();
   const user = await getAuthUser(req); // Optional
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
   try {
     const {
@@ -16,10 +22,14 @@ export async function POST(req: NextRequest) {
       paymentMethod = 'COD',
       couponCode,
       notes,
+      isGift,
+      giftMessage,
       guestInfo,
     } = await req.json();
 
     if (!items || items.length === 0) {
+      await session.abortTransaction();
+      session.endSession();
       return NextResponse.json({ success: false, message: 'Order must have at least one item' }, { status: 400 });
     }
 
@@ -27,32 +37,57 @@ export async function POST(req: NextRequest) {
     const orderItems = [];
 
     for (const item of items) {
-      const product = await Product.findById(item.product);
-      if (!product) {
-        return NextResponse.json({ success: false, message: `Product ${item.product} not found` }, { status: 404 });
-      }
-      if (product.stock < item.qty) {
-        return NextResponse.json({
-          success: false,
-          message: `Insufficient stock for ${product.name}. Available: ${product.stock}`,
-        }, { status: 400 });
-      }
+      if (item.isBundle) {
+        const bundle = await Bundle.findById(item.product).populate('items.product').session(session);
+        if (!bundle || !bundle.isActive) {
+          throw new Error(`Bundle not found or inactive`);
+        }
+        subtotal += bundle.bundlePrice * item.qty;
+        
+        const subProducts = [];
+        for (const bItem of bundle.items) {
+           const prod = bItem.product as any;
+           if (prod.stock < item.qty * bItem.quantity) {
+              throw new Error(`Insufficient stock for bundle item ${prod.name}. Available: ${prod.stock}`);
+           }
+           await Product.findByIdAndUpdate(prod._id, { $inc: { stock: -(item.qty * bItem.quantity) } }, { session });
+           subProducts.push({ product: prod._id, quantity: item.qty * bItem.quantity });
+        }
 
-      const price = product.onSale ? product.salePrice : product.price;
-      subtotal += price * item.qty;
+        orderItems.push({
+          product: null,
+          name: bundle.name,
+          image: bundle.image?.url || '',
+          price: bundle.bundlePrice,
+          qty: item.qty,
+          isBundle: true,
+          bundleId: bundle._id,
+          selectedBundleItems: subProducts
+        });
+      } else {
+        const product = await Product.findById(item.product).session(session);
+        if (!product) throw new Error(`Product ${item.product} not found`);
+        if (product.stock < item.qty) throw new Error(`Insufficient stock for ${product.name}. Available: ${product.stock}`);
+        
+        const price = product.onSale ? product.salePrice : product.price;
+        subtotal += price * item.qty;
 
-      orderItems.push({
-        product: product._id,
-        name: product.name,
-        image: product.images[0]?.url || '',
-        price,
-        qty: item.qty,
-        color: item.color,
-      });
+        await Product.findByIdAndUpdate(product._id, { $inc: { stock: -item.qty } }, { session });
+
+        orderItems.push({
+          product: product._id,
+          name: product.name,
+          image: product.images[0]?.url || '',
+          price,
+          qty: item.qty,
+          color: item.color,
+        });
+      }
     }
 
-    const FREE_THRESHOLD = Number(process.env.FREE_SHIPPING_THRESHOLD || 2000);
-    const SHIPPING_FEE = Number(process.env.SHIPPING_FEE || 200);
+    const settings = await Settings.findOne().session(session) || { freeShippingThreshold: 2000, shippingFee: 200 };
+    const FREE_THRESHOLD = settings.freeShippingThreshold;
+    const SHIPPING_FEE = settings.shippingFee;
     const shippingFee = subtotal >= FREE_THRESHOLD ? 0 : SHIPPING_FEE;
 
     let discount = 0;
@@ -61,16 +96,15 @@ export async function POST(req: NextRequest) {
         code: couponCode.toUpperCase(),
         isActive: true,
         expiresAt: { $gt: new Date() },
-      });
-      if (coupon) {
-        if (subtotal >= coupon.minOrderAmount) {
-          if (!coupon.usageLimit || coupon.usedCount < coupon.usageLimit) {
-            discount = coupon.type === 'percent'
-              ? Math.round((subtotal * coupon.value) / 100)
-              : coupon.value;
-            coupon.usedCount += 1;
-            await coupon.save();
-          }
+      }).session(session);
+      
+      if (coupon && subtotal >= coupon.minOrderAmount) {
+        if (!coupon.usageLimit || coupon.usedCount < coupon.usageLimit) {
+          discount = coupon.type === 'percent'
+            ? Math.round((subtotal * coupon.value) / 100)
+            : coupon.value;
+          coupon.usedCount += 1;
+          await coupon.save({ session });
         }
       }
     }
@@ -86,6 +120,8 @@ export async function POST(req: NextRequest) {
       discount,
       total,
       notes,
+      isGift,
+      giftMessage,
       couponCode: couponCode?.toUpperCase(),
     };
 
@@ -95,14 +131,15 @@ export async function POST(req: NextRequest) {
       orderData.guestInfo = guestInfo;
     }
 
-    const order = await Order.create(orderData);
+    const [order] = await Order.create([orderData], { session });
 
-    for (const item of items) {
-      await Product.findByIdAndUpdate(item.product, { $inc: { stock: -item.qty } });
-    }
+    await session.commitTransaction();
+    session.endSession();
 
     return NextResponse.json({ success: true, data: order }, { status: 201 });
   } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    await session.abortTransaction();
+    session.endSession();
+    return NextResponse.json({ success: false, message: err.message }, { status: 400 });
   }
 }

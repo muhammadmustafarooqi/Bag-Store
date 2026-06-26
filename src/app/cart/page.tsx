@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from 'react-icons/fi';
 import { useCartStore } from '@/store/cartStore';
-import { formatCurrency, FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '@/lib/constants';
+import { formatCurrency } from '@/lib/constants';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function CartPage() {
-  const { items, removeItem, updateQty, subtotal, shippingFee, total, clearCart } = useCartStore();
+  const { items, removeItem, updateQty, subtotal, shippingFee, total, clearCart, globalSettings } = useCartStore();
+  const threshold = globalSettings?.freeShippingThreshold || 2000;
   const [coupon, setCoupon] = useState('');
   const [discount, setDiscount] = useState(0);
   const [couponApplied, setCouponApplied] = useState(false);
@@ -132,7 +133,7 @@ export default function CartPage() {
                 )}
                 {shippingFee() > 0 && (
                   <p className="text-xs" style={{ color: '#7a6a54' }}>
-                    Add {formatCurrency(FREE_SHIPPING_THRESHOLD - subtotal())} more for free shipping
+                    Add {formatCurrency(threshold - subtotal())} more for free shipping
                   </p>
                 )}
               </div>

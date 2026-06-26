@@ -24,6 +24,8 @@ export default function CheckoutPage() {
   const { user, isAuthenticated } = useAuthStore();
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'JazzCash'>('COD');
   const [loading, setLoading] = useState(false);
+  const [isGift, setIsGift] = useState(false);
+  const [giftMessage, setGiftMessage] = useState('');
 
   const [form, setForm] = useState<ShippingForm>({
     name: user?.name || '',
@@ -68,6 +70,8 @@ export default function CheckoutPage() {
           province: form.province,
         },
         paymentMethod,
+        isGift,
+        giftMessage,
         ...(!isAuthenticated && {
           guestInfo: { name: form.name, email: form.email, phone: form.phone },
         }),
@@ -226,6 +230,43 @@ export default function CheckoutPage() {
                       </select>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Gift Options */}
+              <div>
+                <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '1.75rem', color: '#f0e4ce' }} className="mb-6">
+                  Gift Options
+                </h2>
+                <div className="p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isGift}
+                      onChange={(e) => setIsGift(e.target.checked)}
+                      className="w-5 h-5 accent-[#c8a96e]"
+                    />
+                    <span style={{ color: '#f0e4ce', fontWeight: '500' }}>This order is a gift</span>
+                  </label>
+                  
+                  {isGift && (
+                    <div className="mt-4 pt-4" style={{ borderTop: '1px dashed rgba(200,169,110,0.2)' }}>
+                      <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>
+                        Gift Message (Optional)
+                      </label>
+                      <textarea
+                        value={giftMessage}
+                        onChange={(e) => setGiftMessage(e.target.value)}
+                        className="input-field w-full resize-none"
+                        rows={3}
+                        placeholder="Add a special note for the recipient..."
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-right mt-1" style={{ color: '#7a6a54' }}>
+                        {giftMessage.length}/500
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 

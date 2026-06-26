@@ -7,6 +7,12 @@ const orderItemSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   qty: { type: Number, required: true, min: 1 },
   color: { type: String },
+  isBundle: { type: Boolean, default: false },
+  bundleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bundle' },
+  selectedBundleItems: [{
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    quantity: Number
+  }],
 });
 
 const shippingAddressSchema = new mongoose.Schema({
@@ -65,6 +71,8 @@ const orderSchema = new mongoose.Schema(
     total: { type: Number, required: true },
     couponCode: { type: String },
     notes: { type: String },
+    isGift: { type: Boolean, default: false },
+    giftMessage: { type: String, maxlength: 500 },
     placedAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

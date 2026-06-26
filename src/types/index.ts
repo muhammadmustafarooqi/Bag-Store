@@ -39,10 +39,12 @@ export interface Product {
 }
 
 export interface CartItem {
-  product: Product;
+  product: Product | any;
   qty: number;
   color: string;
   price: number;
+  isBundle?: boolean;
+  bundleItems?: any[];
 }
 
 export interface User {
@@ -71,6 +73,9 @@ export interface OrderItem {
   price: number;
   qty: number;
   color?: string;
+  isBundle?: boolean;
+  bundleId?: string;
+  selectedBundleItems?: any[];
 }
 
 export interface Order {

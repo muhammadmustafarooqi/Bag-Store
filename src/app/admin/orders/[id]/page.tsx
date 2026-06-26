@@ -103,6 +103,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
         <div>
           <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2.5rem', color: '#f0e4ce' }}>
             Order {data.orderId}
+            {data.isGift && <span className="ml-4 text-sm bg-[#c8a96e] text-black px-3 py-1 rounded-full font-bold uppercase tracking-widest align-middle">GIFT ORDER</span>}
           </h1>
           <p className="text-sm mt-1" style={{ color: '#7a6a54' }}>
             Placed on {new Date(data.placedAt).toLocaleString('en-PK')}
@@ -196,17 +197,32 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#f0e4ce' }}>Items Ordered</h2>
             <div className="space-y-4">
               {data.items?.map((item: any) => (
-                <div key={item._id} className="flex items-center gap-4 py-3" style={{ borderBottom: '1px solid rgba(200,169,110,0.05)' }}>
-                  <img src={item.image || 'https://via.placeholder.com/60'} alt={item.name} className="w-16 h-16 object-cover bg-[#0f0e0c]" />
-                  <div className="flex-1">
-                    <p className="font-medium" style={{ color: '#f0e4ce' }}>{item.name}</p>
-                    <p className="text-xs mt-1" style={{ color: '#7a6a54' }}>
-                      {item.color && <span>Color: {item.color} | </span>} Qty: {item.qty}
-                    </p>
+                <div key={item._id} className="py-3" style={{ borderBottom: '1px solid rgba(200,169,110,0.05)' }}>
+                  <div className="flex items-center gap-4">
+                    <img src={item.image || 'https://via.placeholder.com/60'} alt={item.name} className="w-16 h-16 object-cover bg-[#0f0e0c]" />
+                    <div className="flex-1">
+                      <p className="font-medium" style={{ color: '#f0e4ce' }}>
+                        {item.name} {item.isBundle && <span className="ml-2 text-xs bg-[#c8a96e] text-black px-2 py-0.5 rounded font-bold">BUNDLE</span>}
+                      </p>
+                      <p className="text-xs mt-1" style={{ color: '#7a6a54' }}>
+                        {item.color && <span>Color: {item.color} | </span>} Qty: {item.qty}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold" style={{ color: '#c8a96e' }}>{formatCurrency(item.price * item.qty)}</p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold" style={{ color: '#c8a96e' }}>{formatCurrency(item.price * item.qty)}</p>
-                  </div>
+                  {item.isBundle && item.selectedBundleItems && item.selectedBundleItems.length > 0 && (
+                    <div className="mt-3 ml-20 p-3 rounded" style={{ background: 'rgba(200,169,110,0.05)' }}>
+                      <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>Bundle Sub-Products</p>
+                      {item.selectedBundleItems.map((subItem: any, idx: number) => (
+                        <div key={idx} className="flex justify-between text-sm py-1 border-b border-[#7a6a54]/20 last:border-0" style={{ color: '#f0e4ce' }}>
+                          <span>Product ID: {subItem.product}</span>
+                          <span>Qty: {subItem.quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -233,8 +249,20 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
             </div>
           </div>
 
+          {/* Gift Message (If any) */}
+          {data.isGift && (
+            <div className="p-6 mt-6" style={{ background: '#1a1815', border: '1px solid #c8a96e' }}>
+              <h2 className="text-lg font-semibold mb-2 flex items-center gap-2" style={{ color: '#c8a96e' }}>
+                <FiPackage /> Gift Order
+              </h2>
+              <p className="text-sm italic" style={{ color: '#f0e4ce' }}>
+                "{data.giftMessage || 'No message provided'}"
+              </p>
+            </div>
+          )}
+
           {/* Shipment Tracking */}
-          <div className="p-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
+          <div className="p-6 mt-6" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.15)' }}>
             <h2 className="text-lg font-semibold mb-4" style={{ color: '#f0e4ce' }}>Shipment Tracking</h2>
             <div className="space-y-4">
               <div>

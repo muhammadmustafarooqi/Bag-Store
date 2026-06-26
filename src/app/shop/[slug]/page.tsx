@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
 import { useProduct, useProducts } from '@/hooks/useProducts';
 import { useCartStore } from '@/store/cartStore';
 import { useWishlistStore } from '@/store/wishlistStore';
@@ -54,6 +55,17 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
     limit: 4,
   });
   const related = relatedData?.data?.filter((p) => p._id !== product?._id).slice(0, 4) || [];
+
+  const { data: bundlesData } = useQuery({
+    queryKey: ['active-bundles'],
+    queryFn: async () => {
+      const { data } = await api.get('/bundles');
+      return data.data;
+    },
+  });
+  const productBundles = bundlesData?.filter((b: any) => 
+    b.items.some((item: any) => item.product._id === product?._id)
+  ) || [];
 
   const displayPrice = product?.onSale && product?.salePrice ? product.salePrice : (product?.price || 0);
 
@@ -110,6 +122,18 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
       currency: 'PKR',
     });
     router.push('/checkout');
+  };
+
+  const handleAddBundleToCart = (bundle: any) => {
+    addItem(bundle, 1, '', true, bundle.items);
+    fbEvent('AddToCart', {
+      content_ids: [bundle._id],
+      content_name: bundle.name,
+      content_type: 'bundle',
+      value: bundle.bundlePrice,
+      currency: 'PKR',
+    });
+    toast.success(`${bundle.name} added to cart!`);
   };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
@@ -446,6 +470,39 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
           </div>
         </div>
 
+        {/* Product Bundles */}
+        {productBundles.length > 0 && (
+          <div className="mt-16 pt-8" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
+            <div className="mb-8">
+              <p className="section-subtitle mb-2">Special Offers</p>
+              <h2 className="section-title">Available in Bundles</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {productBundles.map((b: any) => (
+                <div key={b._id} className="p-6 flex flex-col justify-between" style={{ background: '#1a1815', border: '1px solid rgba(200,169,110,0.2)' }}>
+                  <div>
+                    <h3 className="font-serif text-xl mb-2" style={{ color: '#c8a96e' }}>{b.name}</h3>
+                    <p className="text-sm mb-4" style={{ color: '#a08060' }}>{b.description}</p>
+                    <div className="space-y-2 mb-6">
+                      {b.items.map((item: any, idx: number) => (
+                        <div key={idx} className="flex justify-between text-sm" style={{ color: '#f0e4ce' }}>
+                          <span>{item.quantity}x {item.product?.name || 'Product'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-4" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
+                    <span className="font-serif text-xl" style={{ color: '#c8a96e' }}>{formatCurrency(b.bundlePrice)}</span>
+                    <button onClick={() => handleAddBundleToCart(b)} className="btn-primary text-sm py-2 px-6">
+                      Add Bundle
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Related Products */}
         {related.length > 0 && (
           <div className="mt-16">
@@ -454,7 +511,7 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <h2 className="section-title">Related Products</h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {related.map((p) => <ProductCard key={p._id} product={p} />)}
+              {related.map((p: any) => <ProductCard key={p._id} product={p} />)}
             </div>
           </div>
         )}

@@ -6,6 +6,8 @@ import CustomCursor from "@/components/ui/CustomCursor";
 import { Suspense } from "react";
 import { MetaPixel } from "@/components/MetaPixel";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
+import { GlobalSettingsProvider } from "@/components/GlobalSettingsProvider";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 export const metadata: Metadata = {
   title: {
@@ -42,10 +44,12 @@ export default function RootLayout({
             <MetaPixel />
             <AnalyticsTracker />
           </Suspense>
+          <GlobalSettingsProvider />
           <CustomCursor />
           <ConditionalLayout>
             {children}
           </ConditionalLayout>
+          <WhatsAppButton />
         </Providers>
       </body>
     </html>

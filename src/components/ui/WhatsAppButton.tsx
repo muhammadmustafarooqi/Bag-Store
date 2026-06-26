@@ -1,10 +1,18 @@
 'use client';
 import { FaWhatsapp } from 'react-icons/fa';
 import { fbEvent } from '@/lib/pixel';
-
-const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
+import { usePathname } from 'next/navigation';
+import { useCartStore } from '@/store/cartStore';
 
 export function WhatsAppButton() {
+  const pathname = usePathname();
+  const globalSettings = useCartStore((state) => state.globalSettings);
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
+  const WA_NUMBER = globalSettings?.whatsappNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
   return (
     <a
       href={`https://wa.me/${WA_NUMBER}?text=Hi%20KAARVAN!%20I%20need%20help%20with%20my%20order.`}

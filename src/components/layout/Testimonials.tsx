@@ -61,11 +61,37 @@ const REVIEWS = [
   },
 ];
 
+import api from '@/lib/api';
+
 export function Testimonials() {
+  const [reviews, setReviews] = useState(REVIEWS);
   const [currentIndex, setCurrentIndex] = useState(REVIEWS.length);
   const [visibleCards, setVisibleCards] = useState(2);
   const [isPaused, setIsPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const { data } = await api.get('/testimonials');
+        if (data.data && data.data.length > 0) {
+          const formatted = data.data.map((t: any) => ({
+            name: t.name,
+            city: t.role || 'Verified Buyer',
+            category: 'Premium Purchase',
+            rating: t.rating,
+            comment: t.text,
+            avatar: t.name.substring(0, 2).toUpperCase(),
+          }));
+          setReviews(formatted);
+          setCurrentIndex(formatted.length);
+        }
+      } catch (err) {
+        console.error('Failed to fetch testimonials', err);
+      }
+    };
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -101,16 +127,16 @@ export function Testimonials() {
   };
 
   const handleTransitionEnd = () => {
-    if (currentIndex >= REVIEWS.length * 2) {
+    if (currentIndex >= reviews.length * 2) {
       setIsTransitioning(false);
-      setCurrentIndex(currentIndex - REVIEWS.length);
+      setCurrentIndex(currentIndex - reviews.length);
     } else if (currentIndex <= 0) {
       setIsTransitioning(false);
-      setCurrentIndex(currentIndex + REVIEWS.length);
+      setCurrentIndex(currentIndex + reviews.length);
     }
   };
 
-  const DISPLAY_REVIEWS = [...REVIEWS, ...REVIEWS, ...REVIEWS, ...REVIEWS];
+  const DISPLAY_REVIEWS = [...reviews, ...reviews, ...reviews, ...reviews];
 
   return (
     <section className="py-28 px-4 relative overflow-hidden" style={{ background: '#0a0908' }}>
