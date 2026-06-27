@@ -13,11 +13,10 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-categorySchema.pre('save', function (next) {
+categorySchema.pre('save', async function () {
   if (this.isModified('name') && !this.slug) {
     this.slug = slugify(this.name, { lower: true, strict: true });
   }
-  next();
 });
 
 export default mongoose.models.Category || mongoose.model('Category', categorySchema);

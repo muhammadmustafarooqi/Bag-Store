@@ -1,4 +1,4 @@
-import { NextResponse } from 'next';
+import { NextResponse } from 'next/server';
 import Bundle from '@/lib/models/Bundle';
 import connectDB from '@/lib/db';
 
