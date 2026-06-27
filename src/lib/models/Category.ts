@@ -8,6 +8,9 @@ const categorySchema = new mongoose.Schema(
     image: { type: String },
     imagePublicId: { type: String },
     description: { type: String },
+    cursorTitle: { type: String },
+    cursorSubtitle: { type: String },
+    iconName: { type: String },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

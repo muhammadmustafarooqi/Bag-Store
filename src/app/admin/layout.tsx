@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
-import { FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiLogOut, FiX, FiMenu, FiTrendingUp, FiHelpCircle, FiSettings, FiMessageSquare } from 'react-icons/fi';
+import { FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiLogOut, FiX, FiMenu, FiTrendingUp, FiHelpCircle, FiSettings, FiMessageSquare, FiList } from 'react-icons/fi';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -32,6 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/admin/dashboard', label: 'Dashboard', icon: <FiGrid size={18} /> },
     { href: '/admin/analytics', label: 'Analytics', icon: <FiTrendingUp size={18} /> },
     { href: '/admin/products', label: 'Products', icon: <FiShoppingBag size={18} /> },
+    { href: '/admin/categories', label: 'Categories', icon: <FiList size={18} /> },
     { href: '/admin/orders', label: 'Orders', icon: <FiPackage size={18} /> },
     { href: '/admin/customers', label: 'Customers', icon: <FiUsers size={18} /> },
     { href: '/admin/coupons', label: 'Coupons', icon: <FiTag size={18} /> },
