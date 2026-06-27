@@ -1,20 +1,47 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from 'react-icons/fi';
 import { useCartStore } from '@/store/cartStore';
+import { useAuthStore } from '@/store/authStore';
 import { formatCurrency } from '@/lib/constants';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function CartPage() {
-  const { items, removeItem, updateQty, subtotal, shippingFee, total, clearCart, globalSettings } = useCartStore();
-  const threshold = globalSettings?.freeShippingThreshold || 2000;
-  const [coupon, setCoupon] = useState('');
-  const [discount, setDiscount] = useState(0);
-  const [couponApplied, setCouponApplied] = useState(false);
+  const { items, removeItem, updateQty, subtotal, shippingFee, total, clearCart, globalSettings, appliedCoupon, setAppliedCoupon } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
+  const threshold = appliedCoupon ? 7000 : 3500;
+  const [coupon, setCoupon] = useState(appliedCoupon?.code || '');
+  const [discount, setDiscount] = useState(appliedCoupon?.discount || 0);
+  const [couponApplied, setCouponApplied] = useState(!!appliedCoupon);
   const [couponLoading, setCouponLoading] = useState(false);
+  const [prizeName, setPrizeName] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function checkVaultCoupon() {
+      if (!isAuthenticated || couponApplied || items.length === 0) return;
+      try {
+        const { data: statusData } = await api.get('/users/vault/status');
+        if (statusData.success && statusData.data.hasOpenedVault && statusData.data.coupon?.isActive) {
+          const code = statusData.data.coupon.code;
+          const { data: valData } = await api.post('/coupons/validate', { code, orderTotal: subtotal() });
+          if (valData.success) {
+            setCoupon(code);
+            setDiscount(valData.data.discount);
+            setCouponApplied(true);
+            setAppliedCoupon({ code, discount: valData.data.discount });
+            setPrizeName(statusData.data.vaultPrize);
+            toast.success(`Mystery Vault Reward Auto-Applied: ${statusData.data.vaultPrize}!`);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to apply vault coupon', err);
+      }
+    }
+    checkVaultCoupon();
+  }, [isAuthenticated, items.length, couponApplied, setAppliedCoupon, subtotal]);
 
   const handleApplyCoupon = async () => {
     if (!coupon.trim()) return;

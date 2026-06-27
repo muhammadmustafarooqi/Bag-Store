@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useCartStore } from '@/store/cartStore';
@@ -20,9 +20,10 @@ interface ShippingForm {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, shippingFee, total, clearCart } = useCartStore();
+  const { items, subtotal, shippingFee, total, clearCart, appliedCoupon } = useCartStore();
   const { user, isAuthenticated } = useAuthStore();
   const [paymentMethod, setPaymentMethod] = useState<'COD' | 'JazzCash'>('COD');
+  const [isSuccess, setIsSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isGift, setIsGift] = useState(false);
   const [giftMessage, setGiftMessage] = useState('');
@@ -72,6 +73,8 @@ export default function CheckoutPage() {
         paymentMethod,
         isGift,
         giftMessage,
+        discount: appliedCoupon?.discount || 0,
+        couponCode: appliedCoupon?.code || null,
         ...(!isAuthenticated && {
           guestInfo: { name: form.name, email: form.email, phone: form.phone },
         }),
@@ -100,9 +103,11 @@ export default function CheckoutPage() {
           form_el.appendChild(input);
         });
         document.body.appendChild(form_el);
+        setIsSuccess(true);
         clearCart();
         form_el.submit();
       } else {
+        setIsSuccess(true);
         clearCart();
         router.push(`/order-success/${order.orderId}`);
       }
@@ -112,6 +117,14 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen pt-24 flex items-center justify-center" style={{ background: '#0f0e0c' }}>
+        <div className="w-12 h-12 border-2 border-[#c8a96e] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -348,13 +361,19 @@ export default function CheckoutPage() {
                       {shippingFee() === 0 ? 'FREE' : formatCurrency(shippingFee())}
                     </span>
                   </div>
+                  {appliedCoupon && appliedCoupon.discount > 0 && (
+                    <div className="flex justify-between text-sm text-[#2d6a4f]">
+                      <span>Discount ({appliedCoupon.code})</span>
+                      <span>- {formatCurrency(appliedCoupon.discount)}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-between font-semibold text-base py-4"
                   style={{ borderTop: '1px solid rgba(200,169,110,0.15)' }}>
                   <span style={{ color: '#f0e4ce' }}>Total</span>
                   <span style={{ color: '#c8a96e', fontFamily: "'Space Mono', monospace", fontSize: '1.25rem' }}>
-                    {formatCurrency(total())}
+                    {formatCurrency(total() - (appliedCoupon?.discount || 0))}
                   </span>
                 </div>
 

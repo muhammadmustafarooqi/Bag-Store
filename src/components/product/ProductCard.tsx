@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 import { CursorHover } from '@/components/ui/CursorHover';
 import { QuickViewModal } from './QuickViewModal';
 import { fbEvent } from '@/lib/pixel';
+import { useCursorStore } from '@/store/cursorStore';
 
 interface Props {
   product: Product;
@@ -20,8 +21,11 @@ export function ProductCard({ product }: Props) {
   const [hovered, setHovered] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
+  const items = useCartStore((s) => s.items);
   const { toggle, isWishlisted } = useWishlistStore();
+  const resetCursor = useCursorStore((s) => s.resetCursor);
   const wishlisted = isWishlisted(product._id);
+  const isInCart = items.some((i) => i.product._id === product._id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -121,6 +125,7 @@ export function ProductCard({ product }: Props) {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                resetCursor();
                 setIsQuickViewOpen(true);
               }}
               className="p-2 rounded-full transition-all duration-200 bg-[#0f0e0c]/70 text-[#f0e4ce] hover:bg-[#c8a96e] hover:text-[#0f0e0c]"
@@ -146,10 +151,10 @@ export function ProductCard({ product }: Props) {
             {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || isInCart}
               className="p-2 rounded-full transition-all duration-200 bg-[#0f0e0c]/70 text-[#f0e4ce] hover:bg-[#c8a96e] hover:text-[#0f0e0c] disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Add to Cart"
-              title={product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              title={product.stock === 0 ? 'Out of Stock' : (isInCart ? 'Already in Cart' : 'Add to Cart')}
             >
               <FiShoppingBag size={16} />
             </button>

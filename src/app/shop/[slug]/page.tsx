@@ -46,9 +46,12 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
 
   const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
+  const items = useCartStore((s) => s.items);
   const clearCart = useCartStore((s) => s.clearCart);
   const { toggle, isWishlisted } = useWishlistStore();
   const { isAuthenticated } = useAuthStore();
+  
+  const isInCart = product ? items.some((i) => i.product._id === product._id) : false;
 
   const { data: relatedData } = useProducts({
     category: product?.category,
@@ -313,11 +316,11 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <div className="flex gap-3 flex-1">
                 <button
                   onClick={handleAddToCart}
-                  disabled={product.stock === 0}
+                  disabled={product.stock === 0 || isInCart}
                   className="flex-1 btn-outline flex items-center gap-2 justify-center py-4 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiShoppingBag size={18} />
-                  Add to Cart
+                  {isInCart ? 'Added to Cart' : 'Add to Cart'}
                 </button>
                 <button
                   onClick={handleBuyNow}
@@ -541,11 +544,11 @@ export default function ProductDetailPage({ params }: { params: { slug: string }
               <div className="flex gap-2 w-full sm:w-auto">
                 <button
                   onClick={handleAddToCart}
-                  disabled={product.stock === 0}
+                  disabled={product.stock === 0 || isInCart}
                   className="btn-outline w-full sm:w-auto flex items-center gap-2 justify-center py-3 px-4 disabled:opacity-50 text-sm"
                 >
                   <FiShoppingBag size={16} />
-                  Cart
+                  {isInCart ? 'Added' : 'Cart'}
                 </button>
                 <button
                   onClick={handleBuyNow}

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useOrder } from '@/hooks/useOrders';
 import { formatCurrency } from '@/lib/constants';
-import { FiCheckCircle, FiPackage, FiPhone } from 'react-icons/fi';
+import { FiCheckCircle, FiPackage, FiPhone, FiDollarSign } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
@@ -61,8 +61,8 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
       <div className="max-w-lg w-full mx-auto px-4 text-center animate-scaleIn relative z-10">
         {/* Success Icon */}
         <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8"
-          style={{ background: 'rgba(45,106,79,0.2)', border: '2px solid rgba(45,106,79,0.5)' }}>
-          <FiCheckCircle size={48} className="text-green-500" />
+          style={{ background: 'rgba(200,169,110,0.1)', border: '2px solid rgba(200,169,110,0.3)' }}>
+          <FiCheckCircle size={48} style={{ color: '#c8a96e' }} />
         </div>
 
         <h1 style={{ fontFamily: "'Space Mono', monospace", fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#f0e4ce' }} className="mb-3">
@@ -97,8 +97,8 @@ export default function OrderSuccessPage({ params }: { params: { orderId: string
               </div>
 
               {order.paymentMethod === 'COD' && (
-                <div className="mt-4 p-3 text-sm" style={{ background: 'rgba(200,169,110,0.08)', border: '1px solid rgba(200,169,110,0.2)', color: '#c8a96e' }}>
-                  💵 You will pay <strong>{formatCurrency(order.total)}</strong> when your order arrives.
+                <div className="mt-4 p-3 text-sm text-center" style={{ background: 'rgba(200,169,110,0.08)', border: '1px solid rgba(200,169,110,0.2)', color: '#c8a96e' }}>
+                  You will pay <strong>{formatCurrency(order.total)}</strong> when your order arrives.
                 </div>
               )}
             </>

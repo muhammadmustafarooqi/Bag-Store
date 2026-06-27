@@ -15,6 +15,8 @@ interface CartStore {
   itemCount: () => number;
   globalSettings: { freeShippingThreshold: number; shippingFee: number; whatsappNumber?: string } | null;
   setGlobalSettings: (settings: any) => void;
+  appliedCoupon: { code: string; discount: number } | null;
+  setAppliedCoupon: (coupon: { code: string; discount: number } | null) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -22,8 +24,10 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
       globalSettings: null,
+      appliedCoupon: null,
 
       setGlobalSettings: (settings) => set({ globalSettings: settings }),
+      setAppliedCoupon: (coupon) => set({ appliedCoupon: coupon }),
 
       addItem: (product, qty, color, isBundle = false, bundleItems = []) => {
         set((state) => {
@@ -60,8 +64,10 @@ export const useCartStore = create<CartStore>()(
 
       shippingFee: () => {
         const sub = get().subtotal();
-        const settings = get().globalSettings || { freeShippingThreshold: 2000, shippingFee: 200 };
-        return sub >= settings.freeShippingThreshold ? 0 : settings.shippingFee;
+        const hasCoupon = !!get().appliedCoupon;
+        const threshold = hasCoupon ? 7000 : 3500;
+        const fee = get().globalSettings?.shippingFee || 200;
+        return sub >= threshold ? 0 : fee;
       },
 
       total: () => get().subtotal() + get().shippingFee(),

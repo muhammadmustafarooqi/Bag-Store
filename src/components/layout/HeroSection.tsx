@@ -79,7 +79,7 @@ export function HeroSection() {
           </h1>
           <p className="text-base md:text-xl max-w-2xl mx-auto mb-10 px-4" style={{ color: '#7a6a54' }}>
             Discover our collection of handcrafted premium bags — from everyday handbags to travel essentials.
-            Free delivery on orders above Rs 2,000.
+            Free delivery on orders above Rs 3500.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center px-6">
             <CursorHover title="Explore All" subtitle="Find your perfect bag" icon="🛍️">

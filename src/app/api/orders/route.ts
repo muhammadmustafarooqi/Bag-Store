@@ -85,9 +85,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const settings = await Settings.findOne().session(session) || { freeShippingThreshold: 2000, shippingFee: 200 };
-    const FREE_THRESHOLD = settings.freeShippingThreshold;
-    const SHIPPING_FEE = settings.shippingFee;
+    const settings = await Settings.findOne().session(session) || { shippingFee: 200 };
+    const FREE_THRESHOLD = couponCode ? 7000 : 3500;
+    const SHIPPING_FEE = settings.shippingFee || 200;
     const shippingFee = subtotal >= FREE_THRESHOLD ? 0 : SHIPPING_FEE;
 
     let discount = 0;

@@ -5,6 +5,7 @@ import { FeaturedProducts } from '@/components/layout/FeaturedProducts';
 import { NewArrivals } from '@/components/layout/NewArrivals';
 import { WhyChooseUs } from '@/components/layout/WhyChooseUs';
 import { PromoBanner } from '@/components/layout/PromoBanner';
+import { MysteryVault } from '@/components/MysteryVault';
 import { Testimonials } from '@/components/layout/Testimonials';
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function HomePage() {
       <CategoryGrid />
       <FeaturedProducts />
       <PromoBanner />
+      <MysteryVault />
       <NewArrivals />
       <WhyChooseUs />
       <Testimonials />

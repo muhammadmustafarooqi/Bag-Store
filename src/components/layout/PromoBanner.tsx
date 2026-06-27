@@ -34,7 +34,7 @@ export function PromoBanner() {
               <span className="sm:hidden text-2xl" style={{ color: '#c8a96e' }}><MdOutlineLocalShipping /></span>
               <span>
                 Free Delivery on Orders Above{' '}
-                <span style={{ color: '#c8a96e' }}>Rs 2,000</span>
+                <span style={{ color: '#c8a96e' }}>Rs 3,500</span>
               </span>
             </h2>
             <p className="mt-2 text-sm" style={{ color: '#7a6a54' }}>

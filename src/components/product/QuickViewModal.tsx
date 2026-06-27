@@ -21,7 +21,10 @@ export function QuickViewModal({ isOpen, onClose, product }: Props) {
   const [currentImg, setCurrentImg] = useState('');
   
   const addItem = useCartStore((s) => s.addItem);
+  const items = useCartStore((s) => s.items);
   const { toggle, isWishlisted } = useWishlistStore();
+
+  const isInCart = product ? items.some((i) => i.product._id === product._id) : false;
 
   useEffect(() => {
     if (product) {
@@ -56,7 +59,7 @@ export function QuickViewModal({ isOpen, onClose, product }: Props) {
       />
 
       {/* Modal */}
-      <div className="relative bg-[#1a1815] border border-[rgba(200,169,110,0.2)] shadow-2xl shadow-black/50 w-full max-w-4xl flex flex-col md:flex-row overflow-hidden animate-scaleIn">
+      <div className="relative bg-[#1a1815] border border-[rgba(200,169,110,0.2)] shadow-2xl shadow-black/50 w-full max-w-4xl max-h-[90vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row animate-scaleIn">
         
         {/* Close Button */}
         <button 
@@ -92,7 +95,7 @@ export function QuickViewModal({ isOpen, onClose, product }: Props) {
         </div>
 
         {/* Right: Product Details */}
-        <div className="w-full md:w-1/2 p-8 flex flex-col max-h-[80vh] overflow-y-auto">
+        <div className="w-full md:w-1/2 p-5 md:p-8 flex flex-col md:overflow-y-auto md:max-h-[90vh]">
           <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>{product.category}</p>
           <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: '2rem', color: '#f0e4ce' }} className="mb-2 leading-tight">
             {product.name}
@@ -159,11 +162,11 @@ export function QuickViewModal({ isOpen, onClose, product }: Props) {
           <div className="flex gap-4 mt-auto">
             <button
               onClick={handleAddToCart}
-              disabled={product.stock === 0}
+              disabled={product.stock === 0 || isInCart}
               className="btn-primary flex-1 disabled:opacity-50"
             >
               <FiShoppingBag size={18} />
-              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+              {product.stock === 0 ? 'Out of Stock' : (isInCart ? 'Added to Cart' : 'Add to Cart')}
             </button>
             <button
               onClick={handleWishlist}

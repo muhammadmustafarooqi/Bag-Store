@@ -51,6 +51,10 @@ const userSchema = new mongoose.Schema(
     verificationToken: { type: String, select: false },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },
+    hasOpenedVault: { type: Boolean, default: false },
+    vaultPrize: { type: String },
+    vaultCouponCode: { type: String },
+    vaultOpenedAt: { type: Date },
   },
   { timestamps: true },
 );
