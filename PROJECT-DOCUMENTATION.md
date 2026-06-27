@@ -1,7 +1,7 @@
-# AllNone Store / KAARVAN - Project Documentation
+# KAARVAN - Project Documentation
 
 ## 1. Project Overview
-- **Platform Overview**: "AllNone Store" (branded as KAARVAN within the codebase) is an e-commerce platform dedicated to selling bags, including handbags, backpacks, laptop bags, totes, travel bags, and wallets.
+- **Platform Overview**: KAARVAN is an e-commerce platform dedicated to selling bags, including handbags, backpacks, laptop bags, totes, travel bags, and wallets.
 - **Target Market**: Focused on the Pakistani market, featuring province-specific shipping (Punjab, Sindh, KPK, Balochistan, AJK, GB, Islamabad), phone number validation (`03XXXXXXXXX`), and local payment methods.
 - **Business Model**: Direct-to-Consumer (D2C) retail.
 - **Tech Stack**:
@@ -32,6 +32,7 @@
     - `Testimonial`: `name`, `role`, `text`, `rating`, `image`, `isActive`.
     - `VisitorSession`: Tracks visitor session activity and origin.
     - `AnalyticsEvent`: Tracks specific analytics events (e.g., PageView, AddToCart).
+- **Gamification System**: Custom Mystery Vault discount mechanic integrated into the User model (`hasOpenedVault`, `vaultDiscount`, `vaultDiscountExpiry`). Admins can bypass limits to test.
 - **Auth System**: Custom JWT implementation (`jsonwebtoken`, `bcryptjs`) along with Google OAuth (`@react-oauth/google`). Auth state is synced to the frontend using Zustand (`authStore.ts`).
 - **Hosting / Deployment**: Vercel. Domain managed by Domain.pk.
 - **Required Environment Variables**:
@@ -77,17 +78,20 @@
 ## 4. Functionalities
 - **Product Listing, Filtering, Search**: Fetches data from MongoDB via `/api/products`. Uses URL search params for filtering. Indexed by Mongoose (text index on name, description, tags) for optimal search.
 - **Product Detail Page**: Displays multiple product images with `react-slick` carousel. Includes add to cart, wishlist toggle, size guide modal, and a user review section.
-- **Cart Logic**: Fully managed client-side using Zustand (`cartStore.ts`) with persistence to `localStorage`. Tracks line items, quantities, subtotal calculation, and auto-applies free shipping if the threshold (`NEXT_PUBLIC_FREE_SHIPPING_THRESHOLD`) is met.
+- **Cart Logic**: Fully managed client-side using Zustand (`cartStore.ts`) with persistence to `localStorage`. Tracks line items, quantities, subtotal calculation, and auto-applies free shipping dynamically based on cart conditions (e.g. Free shipping at Rs 3500, or Rs 7000 if a coupon is applied).
 - **Checkout Flow & Order Placement**: 
   - Collects guest or user info and Pakistani province-specific address.
-  - Allows Coupon validation via API (`/api/coupons/validate`).
+  - Allows Coupon validation via API (`/api/coupons/validate`) and auto-applies Vault rewards.
+  - Supports a "Gift Option" allowing customers to flag orders as gifts with a custom message.
   - Submits order to `/api/orders`, decreasing stock limits atomically on the backend. Generates sequential order IDs (`KRV-YYYY-XXXX`).
+  - Seamless redirection with an `isSuccess` loading state to prevent UI flashes.
 - **Payment Integration**: Supports Cash on Delivery (COD) and JazzCash. Stores the `jazzCashTransactionId` directly in the Order model if used.
 - **Order Management**: Users can view statuses. Admins can update statuses (placed, confirmed, packed, shipped, delivered, cancelled, returned) and input courier/tracking data.
 - **Admin Dashboard Capabilities**: Allows full CRUD on products, categories, coupons, and viewing overarching analytics. Requires `role: "admin"`.
 - **User Account/Profile**: Users can manage multiple shipping addresses (setting a default), update passwords, and view order history.
 - **Wishlist**: Allows users to save favorite products. Managed via Zustand (`wishlistStore.ts`) and persisted to the `User` model on the backend for logged-in users.
 - **Reviews/Ratings**: Integrated directly into the `Product` schema. Recalculates average rating and count on each save via Mongoose pre-save hooks.
+- **Mystery Vault (Gamification)**: An interactive gamified element where logged-in users can "unlock" a vault to reveal a discount coupon. The reward is automatically mapped as an active Coupon in the system and auto-applied during the checkout process. Admins have unlimited replay capabilities for testing.
 
 ## 5. Tracking & Marketing Integrations
 - **Meta Pixel**: Initialized in `src/components/MetaPixel.tsx` utilizing Pixel ID `1005576675765836`. Fires a global `PageView` event on route changes (excluding `/admin` and `/api` routes). E-commerce specific events (`AddToCart`, `InitiateCheckout`, `Purchase`) are mapped to respective action handlers using `window.fbq('track', '...')`.
@@ -140,8 +144,8 @@
 - **Typography**: 
   - Serif / Headings: `"Space Mono"`, monospace
   - Sans / Body: `"Roboto Mono"`, monospace
-- **Animations**: Custom Tailwind animations including `shimmer`, `fadeIn`, and `scaleIn`.
-- **Reusable UI Components**: Custom global cursor (`CustomCursor.tsx`, `CursorHover.tsx`), responsive Navbar, unified Footer, `ProductCard`, and modular sections (`HeroSection`, `PromoBanner`, `Testimonials`).
+- **Animations & UX**: Custom Tailwind animations including `shimmer`, `fadeIn`, and `scaleIn`. The Order Success page features a confetti animation (`react-confetti`) and a success audio cue. Interactive elements intelligently handle state (e.g. Add to Cart buttons disable themselves globally when a product is already in the cart).
+- **Reusable UI Components**: Custom global cursor (`CustomCursor.tsx`, `CursorHover.tsx`), responsive Navbar, unified Footer, `ProductCard`, and modular sections (`HeroSection`, `PromoBanner`, `Testimonials`). The Quick View modal features a fully responsive design (`overflow-y-auto`) optimized for both mobile and desktop.
 
 ## 8. Known Issues / Technical Debt
 - **Codebase Cleanliness**: No critical `TODO` or `FIXME` comments exist in the primary source code. 
@@ -169,4 +173,4 @@
 ### Deployment
 - The application is optimized for deployment on **Vercel**.
 - Connect the GitHub repository to a Vercel project, and supply all environment variables in the Vercel Dashboard.
-- The domain (`allnone.pk`) can be mapped directly in Vercel's Domains settings.
+- The domain can be mapped directly in Vercel's Domains settings.
