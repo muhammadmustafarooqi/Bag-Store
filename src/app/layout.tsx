@@ -8,6 +8,7 @@ import { MetaPixel } from "@/components/MetaPixel";
 import { AnalyticsTracker } from "@/components/AnalyticsTracker";
 import { GlobalSettingsProvider } from "@/components/GlobalSettingsProvider";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import Preloader from "@/components/ui/Preloader";
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,7 @@ export default function RootLayout({
             <AnalyticsTracker />
           </Suspense>
           <GlobalSettingsProvider />
+          <Preloader />
           <CustomCursor />
           <ConditionalLayout>
             {children}
