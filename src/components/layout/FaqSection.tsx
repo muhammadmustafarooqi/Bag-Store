@@ -39,15 +39,20 @@ export function FaqSection() {
                 className="w-full flex items-center justify-between p-5 text-left transition-colors hover:bg-[rgba(200,169,110,0.02)]"
               >
                 <span className="font-medium pr-4" style={{ color: '#f0e4ce' }}>{faq.question}</span>
-                <span style={{ color: '#c8a96e' }}>
-                  {openId === faq._id ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
+                <span className="text-[#c8a96e] transition-transform duration-300" style={{ transform: openId === faq._id ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                  <FiChevronDown size={20} />
                 </span>
               </button>
-              {openId === faq._id && (
-                <div className="p-5 pt-0 text-sm leading-relaxed" style={{ color: '#a08060' }}>
-                  {faq.answer}
+              <div 
+                className="grid transition-all duration-300 ease-in-out"
+                style={{ gridTemplateRows: openId === faq._id ? '1fr' : '0fr' }}
+              >
+                <div className="overflow-hidden">
+                  <div className="p-5 pt-0 text-sm leading-relaxed" style={{ color: '#a08060' }}>
+                    {faq.answer}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </div>
