@@ -135,6 +135,11 @@
     color: var(--muted);
   }
 
+  select.input-field {
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
   .product-card {
     @apply relative overflow-hidden transition-all duration-300;
     background: rgba(34, 31, 27, 0.8);

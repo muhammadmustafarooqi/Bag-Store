@@ -8,10 +8,12 @@ import { FaWhatsapp } from 'react-icons/fa';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { fbEvent } from '@/lib/pixel';
-
-const WA = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
+import { useCartStore } from '@/store/cartStore';
 
 export default function OrderSuccessPage({ params }: { params: { orderId: string } }) {
+  const globalSettings = useCartStore((s) => s.globalSettings);
+  const WA = globalSettings?.whatsappNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
+
   const { data, isLoading } = useOrder(params.orderId);
   const order = data?.data;
   const { width, height } = useWindowSize();

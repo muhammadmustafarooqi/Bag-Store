@@ -3,8 +3,12 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { useCartStore } from '@/store/cartStore';
 
 export default function FaqsPage() {
+  const globalSettings = useCartStore((s) => s.globalSettings);
+  const WA_NUMBER = globalSettings?.whatsappNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923000000000';
+
   const [openId, setOpenId] = useState<string | null>(null);
 
   const { data: faqs, isLoading } = useQuery({
@@ -73,7 +77,7 @@ export default function FaqsPage() {
         <div className="mt-16 p-8 text-center" style={{ background: '#1a1815', border: '1px dashed rgba(200,169,110,0.2)' }}>
           <h3 className="font-serif text-xl mb-2" style={{ color: '#f0e4ce' }}>Still have questions?</h3>
           <p className="text-sm mb-6" style={{ color: '#7a6a54' }}>Our support team is here to help.</p>
-          <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923000000000'}`} target="_blank" rel="noreferrer" className="btn-primary py-3 px-8 inline-block">
+          <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer" className="btn-primary py-3 px-8 inline-block">
             Contact Support
           </a>
         </div>

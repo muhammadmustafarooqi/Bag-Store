@@ -9,10 +9,14 @@ import {
   MdOutlineLock,
   MdOutlineLocalShipping
 } from 'react-icons/md';
-
-const WA_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
+import { useCartStore } from '@/store/cartStore';
 
 export function Footer() {
+  const globalSettings = useCartStore((s) => s.globalSettings);
+  const WA_NUMBER = globalSettings?.whatsappNumber || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '923001234567';
+  const CONTACT_EMAIL = globalSettings?.contactEmail || 'hello@kaarvan.pk';
+  const STORE_NAME = globalSettings?.storeName || 'KAARVAN';
+
   return (
     <footer style={{ background: '#0a0908', borderTop: '1px solid rgba(200,169,110,0.15)' }}>
       {/* Newsletter Strip */}
@@ -120,11 +124,11 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-sm" style={{ color: '#7a6a54' }}>
                 <FiPhone size={16} className="mt-0.5 flex-shrink-0 text-[#c8a96e]" />
-                <a href="tel:+923001234567" className="hover:text-[#c8a96e] transition-colors">0300-1234567</a>
+                <a href={`tel:+${WA_NUMBER}`} className="hover:text-[#c8a96e] transition-colors">+{WA_NUMBER}</a>
               </li>
               <li className="flex items-start gap-3 text-sm" style={{ color: '#7a6a54' }}>
                 <FiMail size={16} className="mt-0.5 flex-shrink-0 text-[#c8a96e]" />
-                <a href="mailto:hello@kaarvan.pk" className="hover:text-[#c8a96e] transition-colors">hello@kaarvan.pk</a>
+                <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-[#c8a96e] transition-colors">{CONTACT_EMAIL}</a>
               </li>
               <li className="flex items-start gap-3 text-sm" style={{ color: '#7a6a54' }}>
                 <FiMapPin size={16} className="mt-0.5 flex-shrink-0 text-[#c8a96e]" />
@@ -162,7 +166,7 @@ export function Footer() {
         <div className="mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4"
           style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
           <p className="text-xs" style={{ color: '#7a6a54' }}>
-            © {new Date().getFullYear()} KAARVAN. All rights reserved.
+            © {new Date().getFullYear()} {STORE_NAME}. All rights reserved.
           </p>
           <p className="text-xs uppercase tracking-widest" style={{ color: '#7a6a54' }}>
             Designed in Pakistan

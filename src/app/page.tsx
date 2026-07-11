@@ -7,6 +7,7 @@ import { WhyChooseUs } from '@/components/layout/WhyChooseUs';
 import { PromoBanner } from '@/components/layout/PromoBanner';
 import { MysteryVault } from '@/components/MysteryVault';
 import { Testimonials } from '@/components/layout/Testimonials';
+import { FaqSection } from '@/components/layout/FaqSection';
 
 export const metadata: Metadata = {
   title: 'KAARVAN — Premium Bags for Pakistan',
@@ -23,6 +24,7 @@ export default function HomePage() {
       <MysteryVault />
       <NewArrivals />
       <WhyChooseUs />
+      <FaqSection />
       <Testimonials />
     </>
   );

@@ -25,6 +25,7 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [popularProducts, setPopularProducts] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const itemCount = useCartStore((s) => s.itemCount());
   const { user, isAuthenticated } = useAuthStore();
@@ -56,6 +57,20 @@ export function Navbar() {
     const timeoutId = setTimeout(fetchResults, 300);
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
+
+  useEffect(() => {
+    if (searchOpen && popularProducts.length === 0) {
+      const fetchPopular = async () => {
+        try {
+          const { data } = await api.get('/products?limit=3');
+          setPopularProducts(data.data || []);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchPopular();
+    }
+  }, [searchOpen, popularProducts.length]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,52 +191,108 @@ export function Navbar() {
               </button>
             </div>
 
-            {/* Live Search Results */}
-            {searchQuery.trim() && (
-              <div className="w-full max-w-4xl mt-8 overflow-y-auto max-h-[70vh]">
-                <p className="text-xs uppercase tracking-widest text-[#7a6a54] mb-4">
-                  {isSearching ? 'Searching...' : `Results for "${searchQuery}"`}
-                </p>
-                {searchResults.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {searchResults.map((product: any) => (
-                      <div 
-                        key={product._id} 
-                        onClick={() => {
-                          setSearchOpen(false);
-                          router.push(`/shop/${product.slug}`);
-                        }}
-                        className="flex gap-4 p-4 border border-[rgba(200,169,110,0.1)] hover:border-[#c8a96e] bg-[#1a1815] cursor-pointer transition-colors group"
-                      >
-                        <div className="w-20 h-24 relative flex-shrink-0 bg-[#0f0e0c]">
-                          <Image
-                            src={product.images[0]?.url || 'https://via.placeholder.com/100'}
-                            alt={product.name}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform"
-                          />
+            {/* Live Search Results & Popular Suggestions */}
+            <div className="w-full max-w-4xl mt-8 overflow-y-auto max-h-[70vh] pb-8 scrollbar-hide">
+              {searchQuery.trim() ? (
+                <>
+                  <p className="text-xs uppercase tracking-widest text-[#7a6a54] mb-4">
+                    {isSearching ? 'Searching...' : `Results for "${searchQuery}"`}
+                  </p>
+                  {searchResults.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                      {searchResults.map((product: any) => (
+                        <div 
+                          key={product._id} 
+                          onClick={() => {
+                            setSearchOpen(false);
+                            router.push(`/shop/${product.slug}`);
+                          }}
+                          className="flex gap-4 p-4 border border-[rgba(200,169,110,0.1)] hover:border-[#c8a96e] bg-[#1a1815] cursor-pointer transition-colors group"
+                        >
+                          <div className="w-20 h-24 relative flex-shrink-0 bg-[#0f0e0c]">
+                            <Image
+                              src={product.images[0]?.url || 'https://via.placeholder.com/100'}
+                              alt={product.name}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform"
+                            />
+                          </div>
+                          <div className="flex flex-col justify-center">
+                            <p className="text-xs uppercase text-[#7a6a54] tracking-widest mb-1">{product.category}</p>
+                            <p className="font-semibold text-sm text-[#f0e4ce] line-clamp-2 leading-snug group-hover:text-[#c8a96e] transition-colors">{product.name}</p>
+                            <p className="text-[#c8a96e] font-serif mt-2">{formatCurrency(product.onSale && product.salePrice ? product.salePrice : product.price)}</p>
+                          </div>
                         </div>
-                        <div className="flex flex-col justify-center">
-                          <p className="text-xs uppercase text-[#7a6a54] tracking-widest mb-1">{product.category}</p>
-                          <p className="font-semibold text-sm text-[#f0e4ce] line-clamp-2 leading-snug group-hover:text-[#c8a96e] transition-colors">{product.name}</p>
-                          <p className="text-[#c8a96e] font-serif mt-2">{formatCurrency(product.onSale && product.salePrice ? product.salePrice : product.price)}</p>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
+                  ) : !isSearching && (
+                    <p className="text-[#7a6a54] text-sm">No products found.</p>
+                  )}
+                  {searchResults.length > 0 && (
+                    <button 
+                      onClick={handleSearch}
+                      className="mt-8 text-sm uppercase tracking-widest text-[#c8a96e] hover:text-[#e8c98a] border-b border-current pb-1"
+                    >
+                      View all results →
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mt-4">
+                  {/* Popular Searches */}
+                  <div className="col-span-1">
+                    <p className="text-xs uppercase tracking-widest text-[#7a6a54] mb-6">Popular Searches</p>
+                    <div className="flex flex-col gap-4">
+                      {['Leather Totes', 'Travel Backpacks', 'Minimalist Wallets', 'Office Briefcases'].map((term) => (
+                        <button
+                          key={term}
+                          onClick={() => {
+                            setSearchQuery(term);
+                          }}
+                          className="text-left text-lg text-[#f0e4ce] hover:text-[#c8a96e] transition-colors flex items-center gap-3 group"
+                        >
+                          <FiSearch className="text-[#7a6a54] group-hover:text-[#c8a96e] transition-colors" size={18} />
+                          <span className="font-light">{term}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                ) : !isSearching && (
-                  <p className="text-[#7a6a54] text-sm">No products found.</p>
-                )}
-                {searchResults.length > 0 && (
-                  <button 
-                    onClick={handleSearch}
-                    className="mt-8 text-sm uppercase tracking-widest text-[#c8a96e] hover:text-[#e8c98a] border-b border-current pb-1"
-                  >
-                    View all results →
-                  </button>
-                )}
-              </div>
-            )}
+
+                  {/* Popular Products */}
+                  <div className="col-span-1 md:col-span-2">
+                    <p className="text-xs uppercase tracking-widest text-[#7a6a54] mb-6">Trending Products</p>
+                    {popularProducts.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {popularProducts.map((product: any) => (
+                          <div 
+                            key={product._id} 
+                            onClick={() => {
+                              setSearchOpen(false);
+                              router.push(`/shop/${product.slug}`);
+                            }}
+                            className="flex flex-col p-4 border border-[rgba(200,169,110,0.1)] hover:border-[#c8a96e] bg-[#1a1815] cursor-pointer transition-colors group"
+                          >
+                            <div className="w-full h-40 relative mb-4 bg-[#0f0e0c]">
+                              <Image
+                                src={product.images[0]?.url || 'https://via.placeholder.com/100'}
+                                alt={product.name}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform"
+                              />
+                            </div>
+                            <p className="text-[10px] uppercase text-[#7a6a54] tracking-widest mb-1">{product.category}</p>
+                            <p className="font-semibold text-sm text-[#f0e4ce] line-clamp-1 group-hover:text-[#c8a96e] transition-colors">{product.name}</p>
+                            <p className="text-[#c8a96e] font-serif text-sm mt-2">{formatCurrency(product.onSale && product.salePrice ? product.salePrice : product.price)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[#7a6a54] text-sm">Loading trending products...</p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 

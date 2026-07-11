@@ -21,7 +21,7 @@ function ShopPageContent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [filters, setFilters] = useState({
-    category: searchParams.get('category') || '',
+    category: (searchParams.get('category') || '').toLowerCase(),
     minPrice: '',
     maxPrice: '',
     color: '',
@@ -31,6 +31,16 @@ function ShopPageContent() {
     page: 1,
     limit: 12,
   });
+
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      category: (searchParams.get('category') || '').toLowerCase(),
+      search: searchParams.get('search') || '',
+      isNewArrival: searchParams.get('isNewArrival') === 'true',
+      sort: searchParams.get('sort') || prev.sort,
+    }));
+  }, [searchParams]);
 
   const { data, isLoading } = useProducts(filters);
 
