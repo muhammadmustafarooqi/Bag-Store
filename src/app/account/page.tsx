@@ -15,7 +15,8 @@ import {
   FiLogOut,
   FiChevronRight,
   FiEdit2,
-  FiX
+  FiX,
+  FiSmile
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import api from "@/lib/api";
@@ -103,7 +104,9 @@ function AccountContent() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-8">
           <p className="section-subtitle mb-2">Your Account</p>
-          <h1 className="section-title">Hello, {user.name.split(" ")[0]} 👋</h1>
+          <h1 className="section-title flex items-center gap-3">
+            Hello, {user.name.split(" ")[0]} <FiSmile className="text-[#c8a96e]" size={28} />
+          </h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

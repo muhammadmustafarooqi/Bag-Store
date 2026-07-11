@@ -10,6 +10,8 @@ export default function AdminSettingsPage() {
     freeShippingThreshold: 2000,
     shippingFee: 200,
     whatsappNumber: '',
+    whatsappConfirmTemplate: '',
+    whatsappCustomerTemplate: '',
     storeName: '',
     contactEmail: '',
   });
@@ -28,6 +30,8 @@ export default function AdminSettingsPage() {
         freeShippingThreshold: settings.freeShippingThreshold || 2000,
         shippingFee: settings.shippingFee || 200,
         whatsappNumber: settings.whatsappNumber || '',
+        whatsappConfirmTemplate: settings.whatsappConfirmTemplate || '',
+        whatsappCustomerTemplate: settings.whatsappCustomerTemplate || '',
         storeName: settings.storeName || '',
         contactEmail: settings.contactEmail || '',
       });
@@ -90,6 +94,20 @@ export default function AdminSettingsPage() {
             <input type="text" value={form.whatsappNumber} onChange={(e) => setForm({ ...form, whatsappNumber: e.target.value })}
               className="input-field w-full" placeholder="e.g. 923001234567" />
             <p className="text-xs mt-2" style={{ color: '#a08060' }}>Include country code without '+'. This powers all WhatsApp buttons across the site.</p>
+          </div>
+
+          <div className="pt-4 mt-6" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
+            <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>"Confirm Order" Message Template</label>
+            <textarea value={form.whatsappConfirmTemplate} onChange={(e) => setForm({ ...form, whatsappConfirmTemplate: e.target.value })}
+              className="input-field w-full h-32 py-3" />
+            <p className="text-xs mt-2" style={{ color: '#a08060' }}>Available variables: {'{{customerName}}'}, {'{{orderId}}'}, {'{{total}}'}, {'{{products}}'}</p>
+          </div>
+
+          <div className="pt-4 mt-6" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>
+            <label className="block text-xs uppercase tracking-widest mb-2" style={{ color: '#7a6a54' }}>"Customer Chat" Message Template</label>
+            <textarea value={form.whatsappCustomerTemplate} onChange={(e) => setForm({ ...form, whatsappCustomerTemplate: e.target.value })}
+              className="input-field w-full h-32 py-3" />
+            <p className="text-xs mt-2" style={{ color: '#a08060' }}>Available variables: {'{{customerName}}'}, {'{{orderId}}'}, {'{{orderStatus}}'}, {'{{total}}'}, {'{{trackingUrl}}'}</p>
           </div>
 
           <div className="pt-6 mt-6" style={{ borderTop: '1px solid rgba(200,169,110,0.1)' }}>

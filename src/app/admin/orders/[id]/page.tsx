@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FiArrowLeft, FiMessageCircle, FiTruck, FiPackage, FiCheckCircle, FiClock, FiXCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import Link from 'next/link';
+import { useCartStore } from '@/store/cartStore';
 
 const STATUS_ICONS: Record<string, any> = {
   placed: FiClock,
@@ -22,6 +23,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
   const [courierName, setCourierName] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const globalSettings = useCartStore((s) => s.globalSettings);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['admin-order-detail', params.id],
@@ -58,17 +60,50 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
     }
   };
 
-  const handleWhatsApp = () => {
+  const handleWhatsAppConfirmOrder = () => {
     if (!data) return;
     
-    // Normalize phone number (replace leading 0 with 92)
     let phone = data.shippingAddress?.phone || data.guestInfo?.phone || '';
     if (phone.startsWith('0')) {
       phone = '92' + phone.slice(1);
     }
     
+    const customerName = data.shippingAddress?.name || data.guestInfo?.name || 'Customer';
+    const productNames = data.items?.map((item: any) => `\n- ${item.name} (x${item.qty})`).join('') || '';
+    
+    const defaultTemplate = 'Hi {{customerName}}!\n\nThank you for placing an order with KAARVAN.\nTo ensure a smooth delivery, please confirm your order *{{orderId}}* for the following items:{{products}}\n\n*Total: {{total}}*\n\nPlease reply with "YES" to confirm or "NO" to cancel.\n\nThank you!';
+    const template = globalSettings?.whatsappConfirmTemplate || defaultTemplate;
+    
+    const message = template
+      .replace(/{{customerName}}/g, customerName)
+      .replace(/{{orderId}}/g, data.orderId)
+      .replace(/{{total}}/g, formatCurrency(data.total))
+      .replace(/{{products}}/g, productNames);
+    
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+  };
+
+  const handleWhatsApp = () => {
+    if (!data) return;
+    
+    let phone = data.shippingAddress?.phone || data.guestInfo?.phone || '';
+    if (phone.startsWith('0')) {
+      phone = '92' + phone.slice(1);
+    }
+    
+    const customerName = data.shippingAddress?.name || data.guestInfo?.name || 'Customer';
     const trackingUrl = `${window.location.origin}/track-order`;
-    const message = `Hi ${data.shippingAddress?.name || data.guestInfo?.name || 'Customer'}! \n\nThank you for shopping with KAARVAN. \nYour order *${data.orderId}* is currently *${data.orderStatus}*.\nOrder Total: ${formatCurrency(data.total)}\n\nYou can track your order live here:\n${trackingUrl}\n\nFeel free to reply if you have any questions.`;
+    
+    const defaultTemplate = 'Hi {{customerName}}! \n\nThank you for shopping with KAARVAN. \nYour order *{{orderId}}* is currently *{{orderStatus}}*.\nOrder Total: {{total}}\n\nYou can track your order live here:\n{{trackingUrl}}\n\nFeel free to reply if you have any questions.';
+    const template = globalSettings?.whatsappCustomerTemplate || defaultTemplate;
+    
+    const message = template
+      .replace(/{{customerName}}/g, customerName)
+      .replace(/{{orderId}}/g, data.orderId)
+      .replace(/{{orderStatus}}/g, data.orderStatus)
+      .replace(/{{total}}/g, formatCurrency(data.total))
+      .replace(/{{trackingUrl}}/g, trackingUrl);
     
     const encodedMessage = encodeURIComponent(message);
     window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
@@ -109,7 +144,14 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
             Placed on {new Date(data.placedAt).toLocaleString('en-PK')}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <button 
+            onClick={handleWhatsAppConfirmOrder}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded transition-colors"
+            style={{ background: 'rgba(37, 211, 102, 0.1)', color: '#25D366', border: '1px solid #25D366' }}
+          >
+            <FaWhatsapp size={16} /> Confirm Order
+          </button>
           <button 
             onClick={handleWhatsApp}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded transition-colors"

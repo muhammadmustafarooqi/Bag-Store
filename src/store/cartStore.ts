@@ -13,7 +13,7 @@ interface CartStore {
   subtotal: () => number;
   shippingFee: () => number;
   itemCount: () => number;
-  globalSettings: { freeShippingThreshold: number; shippingFee: number; whatsappNumber?: string } | null;
+  globalSettings: { freeShippingThreshold: number; shippingFee: number; whatsappNumber?: string; whatsappConfirmTemplate?: string; whatsappCustomerTemplate?: string; storeName?: string; contactEmail?: string; } | null;
   setGlobalSettings: (settings: any) => void;
   appliedCoupon: { code: string; discount: number } | null;
   setAppliedCoupon: (coupon: { code: string; discount: number } | null) => void;
